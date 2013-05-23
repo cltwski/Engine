@@ -7,6 +7,7 @@
 
 #include "InputClass.h"
 #include "GraphicsClass.h"
+#include "EngineSettings.h"
 
 class SystemClass
 {
@@ -22,12 +23,12 @@ public:
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
-	LPCWSTR _mApplicationName;
-	HINSTANCE _mHInstance;
-	HWND _mHWnd;
+	LPCWSTR m_ApplicationName;
+	HINSTANCE m_HInstance;
+	HWND m_HWnd;
 
-	InputClass* _mInput;
-	GraphicsClass* _mGraphics;
+	InputClass* m_Input;
+	GraphicsClass* m_Graphics;
 
 	bool Frame();
 	void InitWindows(int&, int&);

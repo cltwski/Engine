@@ -16,7 +16,7 @@ void InputClass::Init()
 	//Init all keys to being release and not being pressed
 	for(i=0; i<256; ++i)
 	{
-		_mKeys[i] = false;
+		m_Keys[i] = false;
 	}
 
 	return;
@@ -24,15 +24,15 @@ void InputClass::Init()
 
 void InputClass::KeyDown(unsigned int input)
 {
-	_mKeys[input] = true;
+	m_Keys[input] = true;
 }
 
 void InputClass::KeyUp(unsigned int input)
 {
-	_mKeys[input] = false;
+	m_Keys[input] = false;
 }
 
 bool InputClass::IsKeyDown(unsigned int key)
 {
-	return _mKeys[key];
+	return m_Keys[key];
 }

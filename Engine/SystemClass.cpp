@@ -2,8 +2,8 @@
 
 SystemClass::SystemClass()
 {
-	_mInput = NULL;
-	_mGraphics = NULL;
+	m_Input = NULL;
+	m_Graphics = NULL;
 }
 
 SystemClass::SystemClass(const SystemClass& other)
@@ -21,21 +21,24 @@ bool SystemClass::Init()
 	//Init the windows api
 	InitWindows(screenWidth, screenHeight);
 
+	//Init Settings
+	EngineSettings::GetInstance().LoadFromFile();
+
 	//Create input object
-	_mInput = new InputClass();
-	if (!_mInput)
+	m_Input = new InputClass();
+	if (!m_Input)
 		return false;
 
 	//Init input object
-	_mInput->Init();
+	m_Input->Init();
 
 	//Create graphics object
-	_mGraphics = new GraphicsClass();
-	if (!_mGraphics)
+	m_Graphics = new GraphicsClass();
+	if (!m_Graphics)
 		return false;
 
 	//Init graphics object
-	result = _mGraphics->Init(screenWidth, screenHeight, _mHWnd);
+	result = m_Graphics->Init(screenWidth, screenHeight, m_HWnd);
 	if (!result)
 		return false;
 
@@ -45,18 +48,18 @@ bool SystemClass::Init()
 void SystemClass::Shutdown()
 {
 	//Release graphics object
-	if (_mGraphics)
+	if (m_Graphics)
 	{
-		_mGraphics->Shutdown();
-		delete _mGraphics;
-		_mGraphics = NULL;
+		m_Graphics->Shutdown();
+		delete m_Graphics;
+		m_Graphics = NULL;
 	}
 
 	//Release the input object
-	if (_mInput)
+	if (m_Input)
 	{
-		delete _mInput;
-		_mInput = NULL;
+		delete m_Input;
+		m_Input = NULL;
 	}
 
 	//Shutdown the window
@@ -104,13 +107,13 @@ bool SystemClass::Frame()
 	bool result;
 
 	//Check if the user pressed escape key (to quit)
-	if (_mInput->IsKeyDown(VK_ESCAPE))
+	if (m_Input->IsKeyDown(VK_ESCAPE))
 		return false;
 
 	//Do game processing here
 
 	//Do frame processing for the graphics object
-	result = _mGraphics->Frame();
+	result = m_Graphics->Frame();
 	if (!result)
 		return false;
 
@@ -124,14 +127,14 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam
 		//Check if a key has been pressed on the keyboard
 	case WM_KEYDOWN:
 		{
-			_mInput->KeyDown((unsigned int)wParam);
+			m_Input->KeyDown((unsigned int)wParam);
 			return 0;
 		}
 
 		//Check if a key has been released on the keyboard
 	case WM_KEYUP:
 		{
-			_mInput->KeyUp((unsigned int)wParam);
+			m_Input->KeyUp((unsigned int)wParam);
 			return 0;
 		}
 
@@ -154,23 +157,23 @@ void SystemClass::InitWindows(int& screenWidth, int& screenHeight)
 	ApplicationHandle = this;
 
 	//Get the instance of the application
-	_mHInstance = GetModuleHandle(NULL);
+	m_HInstance = GetModuleHandle(NULL);
 
 	//Give the application a name
-	_mApplicationName = L"Engine";
+	m_ApplicationName = L"Engine";
 
 	//Setup the windows class with default settings;
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
-	wc.hInstance = _mHInstance;
+	wc.hInstance = m_HInstance;
 	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = _mApplicationName;
+	wc.lpszClassName = m_ApplicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
 	//Register the window class
@@ -181,7 +184,7 @@ void SystemClass::InitWindows(int& screenWidth, int& screenHeight)
 	screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 	//Setup the screen settings depending on whether it is running in full screen or in windows mode
-	if (FULL_SCREEN)
+	if (EngineSettings::GetInstance().GetFullScreen())
 	{
 		//If full screen set the screen to maximum size of the desktop and 32 bit
 		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
@@ -210,12 +213,12 @@ void SystemClass::InitWindows(int& screenWidth, int& screenHeight)
 	}
 
 	//Create the window with the screen settings and get the handle to it
-	_mHWnd = CreateWindowEx(WS_EX_APPWINDOW, _mApplicationName, _mApplicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, _mHInstance, NULL);
+	m_HWnd = CreateWindowEx(WS_EX_APPWINDOW, m_ApplicationName, m_ApplicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, m_HInstance, NULL);
 
 	//Bring the window up on the screen and set it as the main focus
-	ShowWindow(_mHWnd, SW_SHOW);
-	SetForegroundWindow(_mHWnd);
-	SetFocus(_mHWnd);
+	ShowWindow(m_HWnd, SW_SHOW);
+	SetForegroundWindow(m_HWnd);
+	SetFocus(m_HWnd);
 
 	//Hide the mouse cursor
 	ShowCursor(false);
@@ -227,18 +230,18 @@ void SystemClass::ShutdownWindows()
 	ShowCursor(true);
 
 	//Fix the display settings if leaving full screen mode
-	if (FULL_SCREEN)
+	if (EngineSettings::GetInstance().GetFullScreen())
 	{
 		ChangeDisplaySettings(NULL,0);
 	}
 
 	//Remove the window
-	DestroyWindow(_mHWnd);
-	_mHWnd = NULL;
+	DestroyWindow(m_HWnd);
+	m_HWnd = NULL;
 
 	//Remove the application instance
-	UnregisterClass(_mApplicationName, _mHInstance);
-	_mHInstance = NULL;
+	UnregisterClass(m_ApplicationName, m_HInstance);
+	m_HInstance = NULL;
 
 	//Release the pointer to this class
 	ApplicationHandle = NULL;
