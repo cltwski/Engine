@@ -74,6 +74,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GraphicsClass.cpp" />
+    <ClCompile Include="InputClass.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="SystemClass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphicsClass.h" />
+    <ClInclude Include="InputClass.h" />
+    <ClInclude Include="SystemClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
