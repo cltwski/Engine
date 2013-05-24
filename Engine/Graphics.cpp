@@ -5,6 +5,7 @@ Graphics::Graphics()
 	_d3d = NULL;
 	_camera = NULL;
 	_model = NULL;
+	_bitmap = NULL;
 	_textureShader = NULL;
 }
 
@@ -39,18 +40,18 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 	//Set the initial position of the camera
 	_camera->SetPosition(0.0f, 0.0f, -10.0f);
 
-	//Create the model object
-	_model = new Model();
-	if (!_model)
-		return false;
+	////Create the model object
+	//_model = new Model();
+	//if (!_model)
+	//	return false;
 
-	//Init the model
-	result = _model->Init(_d3d->GetDevice(), L"Textures/Grass.dds");
-	if (!result)
-	{
-		MessageBox(hWnd, L"Could not init the model object", L"Error", MB_OK);
-		return false;
-	}
+	////Init the model
+	//result = _model->Init(_d3d->GetDevice(), L"Textures/Grass.dds");
+	//if (!result)
+	//{
+	//	MessageBox(hWnd, L"Could not init the model object", L"Error", MB_OK);
+	//	return false;
+	//}
 
 	//Create the texture shader object
 	_textureShader = new TextureShader();
@@ -62,6 +63,17 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 	if (!result)
 	{
 		MessageBox(hWnd, L"Could not init the texture shader object", L"Error", MB_OK);
+		return false;
+	}
+
+	_bitmap = new Bitmap();
+	if (!_bitmap)
+		return false;
+
+	result = _bitmap->Init(_d3d->GetDevice(), screenWidth, screenHeight, L"Textures/Grass.dds", 32, 32);
+	if (!result)
+	{
+		MessageBox(hWnd, L"Could not init the bitmap object", L"Error", MB_OK);
 		return false;
 	}
 
@@ -77,12 +89,19 @@ void Graphics::Shutdown()
 		_textureShader = NULL;
 	}
 
-	if (_model)
+	if (_bitmap)
+	{
+		_bitmap->Shutdown();
+		delete _bitmap;
+		_bitmap = NULL;
+	}
+
+	/*if (_model)
 	{
 		_model->Shutdown();
 		delete _model;
 		_model = NULL;
-	}
+	}*/
 
 	if (_camera)
 	{
@@ -113,7 +132,7 @@ bool Graphics::Frame()
 
 bool Graphics::Render()
 {
-	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
+	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
 	bool result;
 
 	//Clear the buffer to begin the scene, rgba clear color params
@@ -127,13 +146,22 @@ bool Graphics::Render()
 	_d3d->GetWorldMatrix(worldMatrix);
 	_d3d->GetProjectionMatrix(projectionMatrix);
 
-	//Put the model vertex and index buffer on the graphics pipeline to prepare them for drawing
-	_model->Render(_d3d->GetDeviceContext());
+	_d3d->GetOrthoMatrix(orthoMatrix);
 
-	//Render the model using the color shader
-	result = _textureShader->Render(_d3d->GetDeviceContext(), _model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, _model->GetTexture());
+	//Turn off the Z buffer to begin all 2D rendering
+	_d3d->DisableZBuffer();
+
+	//Put bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing
+	result = _bitmap->Render(_d3d->GetDeviceContext(), 200, 200);
 	if (!result)
 		return false;
+
+	//Render the bitmap using the color shader
+	result = _textureShader->Render(_d3d->GetDeviceContext(), _bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, _bitmap->GetTexture());
+	if (!result)
+		return false;
+
+	_d3d->EnableZBuffer();
 
 	//Present the rendered scene to the screen
 	_d3d->EndScene();

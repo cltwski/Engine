@@ -74,6 +74,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="D3D.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="D3D.h" />

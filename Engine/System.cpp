@@ -18,11 +18,11 @@ bool System::Init()
 	int screenHeight = 0;
 	bool result;
 
-	//Init the windows api
-	InitWindows(screenWidth, screenHeight);
-
 	//Init Settings
 	EngineSettings::GetInstance().LoadFromFile();
+
+	//Init the windows api
+	InitWindows(screenWidth, screenHeight);
 
 	//Create input object
 	_input = new Input();
@@ -204,8 +204,8 @@ void System::InitWindows(int& screenWidth, int& screenHeight)
 	else
 	{
 		//If windowed then set it to 800x600 resolution
-		screenWidth = 800;
-		screenHeight = 600;
+		screenWidth = EngineSettings::GetInstance().GetWindowX();
+		screenHeight = EngineSettings::GetInstance().GetWindowY();
 
 		//Place the window in the middle of the screen
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth)/2;

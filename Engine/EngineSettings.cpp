@@ -4,6 +4,8 @@ EngineSettings::EngineSettings()
 {
 	_fullscreen = false;
 	_vsync = true;
+	_windowX = 640;
+	_windowY = 480;
 }
 
 EngineSettings& EngineSettings::GetInstance()
@@ -25,6 +27,12 @@ void EngineSettings::LoadFromFile()
 	//Get vsync defaults to true
 	result = GetPrivateProfileInt(L"Graphics", L"Vsync", 1, file);
 	_vsync = (result==1) ? true : false;
+
+	//Get window X
+	_windowX = GetPrivateProfileInt(L"Graphics", L"WindowX", 640, file);
+
+	//Get window Y
+	_windowY = GetPrivateProfileInt(L"Graphics", L"WindowY", 480, file);
 }
 
 bool EngineSettings::GetFullScreen()
@@ -35,4 +43,14 @@ bool EngineSettings::GetFullScreen()
 bool EngineSettings::GetVsync()
 {
 	return _vsync;
+}
+
+int EngineSettings::GetWindowX()
+{
+	return _windowX;
+}
+
+int EngineSettings::GetWindowY()
+{
+	return _windowY;
 }

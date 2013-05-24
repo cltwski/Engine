@@ -12,6 +12,8 @@ public:
 
 	bool GetFullScreen();
 	bool GetVsync();
+	int GetWindowX();
+	int GetWindowY();
 
 private:
 	static EngineSettings* instance;
@@ -23,6 +25,8 @@ private:
 private:
 	bool _fullscreen;
 	bool _vsync;
+	int _windowX;
+	int _windowY;
 };
 
 #endif

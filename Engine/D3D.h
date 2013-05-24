@@ -2,10 +2,10 @@
 #define D3D_H
 
 //Linking
-#pragma comment(lib, "dxgi.lib");
-#pragma comment(lib, "d3d11.lib");
-#pragma comment(lib, "d3dx11.lib");
-#pragma comment(lib, "d3dx10.lib");
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dx11.lib")
+#pragma comment(lib, "d3dx10.lib")
 
 //Includes
 #include <DXGI.h>
@@ -35,6 +35,9 @@ public:
 
 	void GetVideoCardInfo(char*, int&);
 
+	void EnableZBuffer();
+	void DisableZBuffer();
+
 private:
 	bool _vsyncEnabled;
 	int _videoCardMemory;
@@ -50,6 +53,7 @@ private:
 	D3DXMATRIX _projectionMatrix;
 	D3DXMATRIX _worldMatrix;
 	D3DXMATRIX _orthoMatrix;
+	ID3D11DepthStencilState* _depthDisabledStencilState;
 };
 
 #endif
