@@ -31,6 +31,9 @@
     <Filter Include="Outputs">
       <UniqueIdentifier>{44574f24-9f36-4a74-8d34-019ab75d2da5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{fae30fcc-46e4-4158-82f5-40d97a90b321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +69,15 @@
     <ClCompile Include="Bitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FontShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineSettings.h">
@@ -98,6 +110,15 @@
     <ClInclude Include="Bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FontShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.ini">
@@ -123,6 +144,12 @@
     </None>
     <None Include="Textures\Grass.dds">
       <Filter>Textures</Filter>
+    </None>
+    <None Include="FontVS.hlsl">
+      <Filter>Shaders\Vertex Shaders</Filter>
+    </None>
+    <None Include="FontPS.hlsl">
+      <Filter>Shaders\Pixel Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

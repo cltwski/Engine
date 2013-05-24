@@ -76,6 +76,9 @@
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FontShader.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="EngineSettings.cpp" />
@@ -89,6 +92,9 @@
   <ItemGroup>
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="FontShader.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="D3D.h" />
     <ClInclude Include="EngineSettings.h" />
@@ -101,6 +107,8 @@
   <ItemGroup>
     <None Include="ColorPS.hlsl" />
     <None Include="ColorVS.hlsl" />
+    <None Include="FontPS.hlsl" />
+    <None Include="FontVS.hlsl" />
     <None Include="Settings.ini" />
     <None Include="shader-error.txt" />
     <None Include="TexturePS.hlsl" />

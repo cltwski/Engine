@@ -7,6 +7,7 @@ Graphics::Graphics()
 	_model = NULL;
 	_bitmap = NULL;
 	_textureShader = NULL;
+	_text = NULL;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -18,6 +19,7 @@ Graphics::~Graphics()
 bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 {
 	bool result;
+	D3DXMATRIX baseViewMatrix;
 
 	//Create the Direct3D Object
 	_d3d = new D3D();
@@ -38,42 +40,18 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 		return false;
 
 	//Set the initial position of the camera
-	_camera->SetPosition(0.0f, 0.0f, -10.0f);
+	_camera->SetPosition(0.0f, 0.0f, -1.0f);
+	_camera->Render();
+	_camera->GetViewMatrix(baseViewMatrix);
 
-	////Create the model object
-	//_model = new Model();
-	//if (!_model)
-	//	return false;
-
-	////Init the model
-	//result = _model->Init(_d3d->GetDevice(), L"Textures/Grass.dds");
-	//if (!result)
-	//{
-	//	MessageBox(hWnd, L"Could not init the model object", L"Error", MB_OK);
-	//	return false;
-	//}
-
-	//Create the texture shader object
-	_textureShader = new TextureShader();
-	if (!_textureShader)
+	_text = new Text();
+	if (!_text)
 		return false;
 
-	//Init the texture shader
-	result = _textureShader->Init(_d3d->GetDevice(), hWnd);
+	result = _text->Init(_d3d->GetDevice(), _d3d->GetDeviceContext(), hWnd, screenWidth, screenHeight, baseViewMatrix);
 	if (!result)
 	{
-		MessageBox(hWnd, L"Could not init the texture shader object", L"Error", MB_OK);
-		return false;
-	}
-
-	_bitmap = new Bitmap();
-	if (!_bitmap)
-		return false;
-
-	result = _bitmap->Init(_d3d->GetDevice(), screenWidth, screenHeight, L"Textures/Grass.dds", 32, 32);
-	if (!result)
-	{
-		MessageBox(hWnd, L"Could not init the bitmap object", L"Error", MB_OK);
+		MessageBox(hWnd, L"Could not init the text object", L"Error", MB_OK);
 		return false;
 	}
 
@@ -82,26 +60,12 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 
 void Graphics::Shutdown()
 {
-	if (_textureShader)
+	if (_text)
 	{
-		_textureShader->Shutdown();
-		delete _textureShader;
-		_textureShader = NULL;
+		_text->Shutdown();
+		delete _text;
+		_text = NULL;
 	}
-
-	if (_bitmap)
-	{
-		_bitmap->Shutdown();
-		delete _bitmap;
-		_bitmap = NULL;
-	}
-
-	/*if (_model)
-	{
-		_model->Shutdown();
-		delete _model;
-		_model = NULL;
-	}*/
 
 	if (_camera)
 	{
@@ -136,7 +100,7 @@ bool Graphics::Render()
 	bool result;
 
 	//Clear the buffer to begin the scene, rgba clear color params
-	_d3d->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	_d3d->BeginScene(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Generate the view matrix based on the camera's position
 	_camera->Render();
@@ -151,16 +115,18 @@ bool Graphics::Render()
 	//Turn off the Z buffer to begin all 2D rendering
 	_d3d->DisableZBuffer();
 
-	//Put bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing
-	result = _bitmap->Render(_d3d->GetDeviceContext(), 200, 200);
+	//Turn on alpha blending before rendering the text
+	_d3d->EnableAlphaBlending();
+
+	//Render the text strings
+	result = _text->Render(_d3d->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)
 		return false;
 
-	//Render the bitmap using the color shader
-	result = _textureShader->Render(_d3d->GetDeviceContext(), _bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, _bitmap->GetTexture());
-	if (!result)
-		return false;
+	//Turn off alpha blending after rendering the text
+	_d3d->DisableAlphaBlending();
 
+	//Re-enable Z buffer as we're done with 2d rendering
 	_d3d->EnableZBuffer();
 
 	//Present the rendered scene to the screen

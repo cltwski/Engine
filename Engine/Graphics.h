@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Bitmap.h"
+#include "Text.h"
 #include "TextureShader.h"
 
 const float SCREEN_DEPTH = 1000.0f;
@@ -27,6 +28,7 @@ private:
 	Camera* _camera;
 	Model* _model;
 	Bitmap* _bitmap;
+	Text* _text;
 	TextureShader* _textureShader;
 
 	bool Render();

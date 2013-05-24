@@ -11,6 +11,8 @@ D3D::D3D()
 	_depthStencilView = NULL;
 	_rasterState = NULL;
 	_depthDisabledStencilState = NULL;
+	_aEnableBlendingState = NULL;
+	_aDisableBlendingState = NULL;
 }
 
 D3D::D3D(const D3D& other)
@@ -39,6 +41,7 @@ bool D3D::Init(int screenWidth, int screenHeight, bool vsync, HWND hWnd, bool fu
 	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
 	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
+	D3D11_BLEND_DESC blendStateDesc;
 
 	// Store the vsync setting.
 	_vsyncEnabled = vsync;
@@ -333,6 +336,32 @@ bool D3D::Init(int screenWidth, int screenHeight, bool vsync, HWND hWnd, bool fu
 	if (FAILED(result))
 		return false;
 
+	//Clear the blend state desc
+	ZeroMemory(&blendStateDesc, sizeof(D3D11_BLEND_DESC));
+
+	// Create an alpha enabled blend state description.
+	blendStateDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	//Create the blend state using the desciption
+	result = _device->CreateBlendState(&blendStateDesc, &_aEnableBlendingState);
+	if (FAILED(result))
+		return false;
+
+	//Modify the desciption to create an alpha disabled blend state desc
+	blendStateDesc.RenderTarget[0].BlendEnable = FALSE;
+
+	//Create the blend state using the desc
+	result = _device->CreateBlendState(&blendStateDesc, &_aDisableBlendingState);
+	if (FAILED(result))
+		return false;
+
 	return true;
 }
 
@@ -341,6 +370,18 @@ void D3D::Shutdown()
 	//Before shutting down set to windowed mode or when you release the swap chain it will throw an exception
 	if(_swapChain)
 		_swapChain->SetFullscreenState(false, NULL);
+
+	if (_aEnableBlendingState)
+	{
+		_aEnableBlendingState->Release();
+		_aEnableBlendingState = NULL;
+	}
+
+	if (_aDisableBlendingState)
+	{
+		_aDisableBlendingState->Release();
+		_aDisableBlendingState = NULL;
+	}
 
 	if (_depthDisabledStencilState)
 	{
@@ -475,4 +516,32 @@ void D3D::EnableZBuffer()
 void D3D::DisableZBuffer()
 {
 	_deviceContext->OMSetDepthStencilState(_depthDisabledStencilState, 1);
+}
+
+void D3D::EnableAlphaBlending()
+{
+	float blendFactor[4];
+
+	//Setup the blend factor
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	//Turn on alpha blending
+	_deviceContext->OMSetBlendState(_aEnableBlendingState, blendFactor, 0xFFFFFFFF);
+}
+
+void D3D::DisableAlphaBlending()
+{
+	float blendFactor[4];
+
+	//Setup the blend factor
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	//Turn off alpha blending
+	_deviceContext->OMSetBlendState(_aDisableBlendingState, blendFactor, 0xFFFFFFFF);
 }
