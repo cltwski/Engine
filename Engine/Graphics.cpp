@@ -5,7 +5,7 @@ Graphics::Graphics()
 	_d3d = NULL;
 	_camera = NULL;
 	_model = NULL;
-	_colorShader = NULL;
+	_textureShader = NULL;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -37,7 +37,7 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 		return false;
 
 	//Set the initial position of the camera
-	_camera->SetPosition(0.0f, 0.0f, -20.0f);
+	_camera->SetPosition(0.0f, 0.0f, -10.0f);
 
 	//Create the model object
 	_model = new Model();
@@ -45,23 +45,23 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 		return false;
 
 	//Init the model
-	result = _model->Init(_d3d->GetDevice());
+	result = _model->Init(_d3d->GetDevice(), L"Textures/Grass.dds");
 	if (!result)
 	{
 		MessageBox(hWnd, L"Could not init the model object", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the color shader object
-	_colorShader = new ColorShader();
-	if (!_colorShader)
+	//Create the texture shader object
+	_textureShader = new TextureShader();
+	if (!_textureShader)
 		return false;
 
-	//Init the color shader
-	result = _colorShader->Init(_d3d->GetDevice(), hWnd);
+	//Init the texture shader
+	result = _textureShader->Init(_d3d->GetDevice(), hWnd);
 	if (!result)
 	{
-		MessageBox(hWnd, L"Could not init the color shader object", L"Error", MB_OK);
+		MessageBox(hWnd, L"Could not init the texture shader object", L"Error", MB_OK);
 		return false;
 	}
 
@@ -70,11 +70,11 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 
 void Graphics::Shutdown()
 {
-	if (_colorShader)
+	if (_textureShader)
 	{
-		_colorShader->Shutdown();
-		delete _colorShader;
-		_colorShader = NULL;
+		_textureShader->Shutdown();
+		delete _textureShader;
+		_textureShader = NULL;
 	}
 
 	if (_model)
@@ -131,7 +131,7 @@ bool Graphics::Render()
 	_model->Render(_d3d->GetDeviceContext());
 
 	//Render the model using the color shader
-	result = _colorShader->Render(_d3d->GetDeviceContext(), _model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	result = _textureShader->Render(_d3d->GetDeviceContext(), _model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, _model->GetTexture());
 	if (!result)
 		return false;
 

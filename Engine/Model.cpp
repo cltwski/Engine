@@ -4,6 +4,7 @@ Model::Model()
 {
 	_vertexBufferPtr = NULL;
 	_indexBufferPtr = NULL;
+	_texture = NULL;
 }
 
 Model::Model(const Model& other)
@@ -12,7 +13,7 @@ Model::Model(const Model& other)
 Model::~Model()
 {}
 
-bool Model::Init(ID3D11Device* device)
+bool Model::Init(ID3D11Device* device, WCHAR* textureFilename)
 {
 	bool result;
 
@@ -21,11 +22,19 @@ bool Model::Init(ID3D11Device* device)
 	if (!result)
 		return false;
 
+	//Load the texture for this model
+	result = LoadTexture(device, textureFilename);
+	if (!result)
+		return false;
+
 	return true;
 }
 
 void Model::Shutdown()
 {
+	//Release the model texture
+	ReleaseTexture();
+
 	//Release the vertex and index buffers
 	ShutdownBuffers();
 }
@@ -39,6 +48,11 @@ void Model::Render(ID3D11DeviceContext* deviceContext)
 int Model::GetIndexCount()
 {
 	return _indexCount;
+}
+
+ID3D11ShaderResourceView* Model::GetTexture()
+{
+	return _texture->GetTexture();
 }
 
 bool Model::InitBuffers(ID3D11Device* device)
@@ -67,22 +81,22 @@ bool Model::InitBuffers(ID3D11Device* device)
 
 	//Load the vertex array with data
 	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f); //bottom left
-	vertices[0].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[0].texture = D3DXVECTOR2(0.0f, 1.0f);
 
 	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f); //top left
-	vertices[1].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[1].texture = D3DXVECTOR2(0.0f, 0.0f);
 
 	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f); //bottom right
-	vertices[2].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[2].texture = D3DXVECTOR2(1.0f, 1.0f);
 
 	vertices[3].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f); //top left
-	vertices[3].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[3].texture = D3DXVECTOR2(0.0f, 0.0f);
 
 	vertices[4].position = D3DXVECTOR3(1.0f, 1.0f, 0.0f); //top right
-	vertices[4].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[4].texture = D3DXVECTOR2(1.0f, 0.0f);
 
 	vertices[5].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f); //bottom right
-	vertices[5].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[5].texture = D3DXVECTOR2(1.0f, 1.0f);
 
 	//Load the index array with data
 	indices[0] = 0;
@@ -170,6 +184,34 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+bool Model::LoadTexture(ID3D11Device* device, WCHAR* filename)
+{
+	bool result;
+
+	//Create the texture object
+	_texture = new Texture();
+	if(!_texture)
+		return false;
+
+	//Init the texture object
+	result = _texture->Init(device, filename);
+	if (!result)
+		return false;
+
+	return true;
+}
+
+void Model::ReleaseTexture()
+{
+	//release the texture object
+	if (_texture)
+	{
+		_texture->Shutdown();
+		delete _texture;
+		_texture = NULL;
+	}
 }
 
 

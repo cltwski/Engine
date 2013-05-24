@@ -75,7 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="ColorShader.cpp" />
+    <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="EngineSettings.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -83,21 +83,28 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="ColorShader.h" />
+    <ClInclude Include="TextureShader.h" />
     <ClInclude Include="D3D.h" />
     <ClInclude Include="EngineSettings.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ColorPS.hlsl" />
     <None Include="ColorVS.hlsl" />
     <None Include="Settings.ini" />
+    <None Include="shader-error.txt" />
+    <None Include="TexturePS.hlsl" />
+    <None Include="Textures\Grass.dds" />
+    <None Include="Textures\seafloor.dds" />
+    <None Include="TextureVS.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
