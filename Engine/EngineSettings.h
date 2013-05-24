@@ -21,8 +21,8 @@ private:
 	void operator=(EngineSettings const&);
 
 private:
-	bool fullscreen;
-	bool vsync;
+	bool _fullscreen;
+	bool _vsync;
 };
 
 #endif

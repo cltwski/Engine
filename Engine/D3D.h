@@ -1,5 +1,5 @@
-#ifndef D3DCLASS_H
-#define D3DCLASS_H
+#ifndef D3D_H
+#define D3D_H
 
 //Linking
 #pragma comment(lib, "dxgi.lib");
@@ -13,12 +13,12 @@
 #include <D3D11.h>
 #include <D3DX10math.h>
 
-class D3DClass
+class D3D
 {
 public:
-	D3DClass();
-	D3DClass(const D3DClass&);
-	~D3DClass();
+	D3D();
+	D3D(const D3D&);
+	~D3D();
 
 	bool Init(int, int, bool, HWND, bool, float, float);
 	void Shutdown();
@@ -36,20 +36,20 @@ public:
 	void GetVideoCardInfo(char*, int&);
 
 private:
-	bool m_vsync_enabled;
-	int m_videoCardMemory;
-	char m_videoCardDescription[128];
-	IDXGISwapChain* m_swapChain;
-	ID3D11Device* m_device;
-	ID3D11DeviceContext* m_deviceContext;
-	ID3D11RenderTargetView* m_renderTargetView;
-	ID3D11Texture2D* m_depthStencilBuffer;
-	ID3D11DepthStencilState* m_depthStencilState;
-	ID3D11DepthStencilView* m_depthStencilView;
-	ID3D11RasterizerState* m_rasterState;
-	D3DXMATRIX m_projectionMatrix;
-	D3DXMATRIX m_worldMatrix;
-	D3DXMATRIX m_orthoMatrix;
+	bool _vsyncEnabled;
+	int _videoCardMemory;
+	char _videoCardDescription[128];
+	IDXGISwapChain* _swapChain;
+	ID3D11Device* _device;
+	ID3D11DeviceContext* _deviceContext;
+	ID3D11RenderTargetView* _renderTargetView;
+	ID3D11Texture2D* _depthStencilBuffer;
+	ID3D11DepthStencilState* _depthStencilState;
+	ID3D11DepthStencilView* _depthStencilView;
+	ID3D11RasterizerState* _rasterState;
+	D3DXMATRIX _projectionMatrix;
+	D3DXMATRIX _worldMatrix;
+	D3DXMATRIX _orthoMatrix;
 };
 
 #endif

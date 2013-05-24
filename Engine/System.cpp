@@ -1,18 +1,18 @@
-#include "SystemClass.h"
+#include "System.h"
 
-SystemClass::SystemClass()
+System::System()
 {
-	m_Input = NULL;
-	m_Graphics = NULL;
+	_input = NULL;
+	_graphics = NULL;
 }
 
-SystemClass::SystemClass(const SystemClass& other)
+System::System(const System& other)
 {}
 
-SystemClass::~SystemClass()
+System::~System()
 {}
 
-bool SystemClass::Init()
+bool System::Init()
 {
 	int screenWidth = 0;
 	int screenHeight = 0;
@@ -25,48 +25,48 @@ bool SystemClass::Init()
 	EngineSettings::GetInstance().LoadFromFile();
 
 	//Create input object
-	m_Input = new InputClass();
-	if (!m_Input)
+	_input = new Input();
+	if (!_input)
 		return false;
 
 	//Init input object
-	m_Input->Init();
+	_input->Init();
 
 	//Create graphics object
-	m_Graphics = new GraphicsClass();
-	if (!m_Graphics)
+	_graphics = new Graphics();
+	if (!_graphics)
 		return false;
 
 	//Init graphics object
-	result = m_Graphics->Init(screenWidth, screenHeight, m_HWnd);
+	result = _graphics->Init(screenWidth, screenHeight, _hWnd);
 	if (!result)
 		return false;
 
 	return true;
 }
 
-void SystemClass::Shutdown()
+void System::Shutdown()
 {
 	//Release graphics object
-	if (m_Graphics)
+	if (_graphics)
 	{
-		m_Graphics->Shutdown();
-		delete m_Graphics;
-		m_Graphics = NULL;
+		_graphics->Shutdown();
+		delete _graphics;
+		_graphics = NULL;
 	}
 
 	//Release the input object
-	if (m_Input)
+	if (_input)
 	{
-		delete m_Input;
-		m_Input = NULL;
+		delete _input;
+		_input = NULL;
 	}
 
 	//Shutdown the window
 	ShutdownWindows();
 }
 
-void SystemClass::Run()
+void System::Run()
 {
 	MSG msg;
 	bool done, result;
@@ -102,39 +102,39 @@ void SystemClass::Run()
 	}
 }
 
-bool SystemClass::Frame()
+bool System::Frame()
 {
 	bool result;
 
 	//Check if the user pressed escape key (to quit)
-	if (m_Input->IsKeyDown(VK_ESCAPE))
+	if (_input->IsKeyDown(VK_ESCAPE))
 		return false;
 
 	//Do game processing here
 
 	//Do frame processing for the graphics object
-	result = m_Graphics->Frame();
+	result = _graphics->Frame();
 	if (!result)
 		return false;
 
 	return true;
 }
 
-LRESULT CALLBACK SystemClass::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK System::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (umsg)
 	{
 		//Check if a key has been pressed on the keyboard
 	case WM_KEYDOWN:
 		{
-			m_Input->KeyDown((unsigned int)wParam);
+			_input->KeyDown((unsigned int)wParam);
 			return 0;
 		}
 
 		//Check if a key has been released on the keyboard
 	case WM_KEYUP:
 		{
-			m_Input->KeyUp((unsigned int)wParam);
+			_input->KeyUp((unsigned int)wParam);
 			return 0;
 		}
 
@@ -147,7 +147,7 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam
 }
 
 
-void SystemClass::InitWindows(int& screenWidth, int& screenHeight)
+void System::InitWindows(int& screenWidth, int& screenHeight)
 {
 	WNDCLASSEX wc;
 	DEVMODE dmScreenSettings;
@@ -157,23 +157,23 @@ void SystemClass::InitWindows(int& screenWidth, int& screenHeight)
 	ApplicationHandle = this;
 
 	//Get the instance of the application
-	m_HInstance = GetModuleHandle(NULL);
+	_hInstance = GetModuleHandle(NULL);
 
 	//Give the application a name
-	m_ApplicationName = L"Engine";
+	_applicationName = L"Engine";
 
 	//Setup the windows class with default settings;
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
-	wc.hInstance = m_HInstance;
+	wc.hInstance = _hInstance;
 	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = m_ApplicationName;
+	wc.lpszClassName = _applicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
 	//Register the window class
@@ -213,18 +213,18 @@ void SystemClass::InitWindows(int& screenWidth, int& screenHeight)
 	}
 
 	//Create the window with the screen settings and get the handle to it
-	m_HWnd = CreateWindowEx(WS_EX_APPWINDOW, m_ApplicationName, m_ApplicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, m_HInstance, NULL);
+	_hWnd = CreateWindowEx(WS_EX_APPWINDOW, _applicationName, _applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, _hInstance, NULL);
 
 	//Bring the window up on the screen and set it as the main focus
-	ShowWindow(m_HWnd, SW_SHOW);
-	SetForegroundWindow(m_HWnd);
-	SetFocus(m_HWnd);
+	ShowWindow(_hWnd, SW_SHOW);
+	SetForegroundWindow(_hWnd);
+	SetFocus(_hWnd);
 
 	//Hide the mouse cursor
 	ShowCursor(false);
 }
 
-void SystemClass::ShutdownWindows()
+void System::ShutdownWindows()
 {
 	//Show the mouse cursor
 	ShowCursor(true);
@@ -236,12 +236,12 @@ void SystemClass::ShutdownWindows()
 	}
 
 	//Remove the window
-	DestroyWindow(m_HWnd);
-	m_HWnd = NULL;
+	DestroyWindow(_hWnd);
+	_hWnd = NULL;
 
 	//Remove the application instance
-	UnregisterClass(m_ApplicationName, m_HInstance);
-	m_HInstance = NULL;
+	UnregisterClass(_applicationName, _hInstance);
+	_hInstance = NULL;
 
 	//Release the pointer to this class
 	ApplicationHandle = NULL;

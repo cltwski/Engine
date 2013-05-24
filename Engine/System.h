@@ -1,20 +1,20 @@
-#ifndef SYSTEMCLASS_H
-#define SYSTEMCLASS_H
+#ifndef SYSTEM_H
+#define SYSTEM_H
 
 #define WIN32_LEAN_AND_MEAN
 
 #include <Windows.h>
 
-#include "InputClass.h"
-#include "GraphicsClass.h"
+#include "Input.h"
+#include "Graphics.h"
 #include "EngineSettings.h"
 
-class SystemClass
+class System
 {
 public:
-	SystemClass();
-	SystemClass(const SystemClass&);
-	~SystemClass();
+	System();
+	System(const System&);
+	~System();
 
 	bool Init();
 	void Shutdown();
@@ -23,12 +23,12 @@ public:
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 private:
-	LPCWSTR m_ApplicationName;
-	HINSTANCE m_HInstance;
-	HWND m_HWnd;
+	LPCWSTR _applicationName;
+	HINSTANCE _hInstance;
+	HWND _hWnd;
 
-	InputClass* m_Input;
-	GraphicsClass* m_Graphics;
+	Input* _input;
+	Graphics* _graphics;
 
 	bool Frame();
 	void InitWindows(int&, int&);
@@ -37,6 +37,6 @@ private:
 
 static LRESULT CALLBACK WndProc(HWND,UINT,WPARAM,LPARAM);
 
-static SystemClass* ApplicationHandle = NULL;
+static System* ApplicationHandle = NULL;
 
 #endif

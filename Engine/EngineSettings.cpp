@@ -2,8 +2,8 @@
 
 EngineSettings::EngineSettings()
 {
-	fullscreen = false;
-	vsync = true;
+	_fullscreen = false;
+	_vsync = true;
 }
 
 EngineSettings& EngineSettings::GetInstance()
@@ -18,21 +18,21 @@ void EngineSettings::LoadFromFile()
 
 	LPCWSTR file = L"G:\\Users\\Christopher\\Google Drive\\Game Project\\Engine\\Engine\\Settings.ini";
 
-	//Get fullscreen defaults to false
+	//Get _fullscreen defaults to false
 	result = GetPrivateProfileInt(L"Graphics", L"Fullscreen", 0, file);
-	fullscreen = (result==1) ? true : false;
+	_fullscreen = (result==1) ? true : false;
 
 	//Get vsync defaults to true
 	result = GetPrivateProfileInt(L"Graphics", L"Vsync", 1, file);
-	vsync = (result==1) ? true : false;
+	_vsync = (result==1) ? true : false;
 }
 
 bool EngineSettings::GetFullScreen()
 {
-	return fullscreen;
+	return _fullscreen;
 }
 
 bool EngineSettings::GetVsync()
 {
-	return vsync;
+	return _vsync;
 }
