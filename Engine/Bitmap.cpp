@@ -17,6 +17,10 @@ bool Bitmap::Init(ID3D11Device* device, int screenWidth, int screenHeight, WCHAR
 {
 	bool result;
 
+	result = CoCreateGuid(&_guid);
+	if (FAILED(result))
+		return false;
+
 	//Store the screen size
 	_screenWidth = screenWidth;
 	_screenHeight = screenHeight;
@@ -278,4 +282,9 @@ void Bitmap::ReleaseTexture()
 		delete _texture;
 		_texture = 0;
 	}
+}
+
+GUID Bitmap::GetGuid()
+{
+	return _guid;
 }

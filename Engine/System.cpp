@@ -4,6 +4,9 @@ System::System()
 {
 	_input = NULL;
 	_graphics = NULL;
+	_fps = NULL;
+	_cpu = NULL;
+	_timer = NULL;
 }
 
 System::System(const System& other)
@@ -30,7 +33,12 @@ bool System::Init()
 		return false;
 
 	//Init input object
-	_input->Init();
+	result = _input->Init(_hInstance, _hWnd, screenWidth, screenHeight);
+	if (!result)
+	{
+		MessageBox(_hWnd, L"Could not init the input object", L"Error", MB_OK);
+		return false;
+	}
 
 	//Create graphics object
 	_graphics = new Graphics();
@@ -42,11 +50,56 @@ bool System::Init()
 	if (!result)
 		return false;
 
+	//Create and init FPS object
+	_fps = new FPS();
+	if (!_fps)
+		return false;
+	_fps->Init();
+
+	//Create and init the CPU objet
+	_cpu = new CPU();
+	if (!_cpu)
+		return false;
+	_cpu->Init();
+
+	//Create and init the Timer object
+	_timer = new Timer();
+	if (!_timer)
+		return false;
+	result = _timer->Init();
+	if (!result)
+	{
+		MessageBox(_hWnd, L"Could not init the timer object", L"Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
 void System::Shutdown()
 {
+	//Release the timer object
+	if (_timer)
+	{
+		delete _timer;
+		_timer = NULL;
+	}
+
+	//Release the CPU object
+	if (_cpu)
+	{
+		_cpu->Shutdown();
+		delete _cpu;
+		_cpu = NULL;
+	}
+
+	//Release the FPS object
+	if (_fps)
+	{
+		delete _fps;
+		_fps = NULL;
+	}
+
 	//Release graphics object
 	if (_graphics)
 	{
@@ -58,6 +111,7 @@ void System::Shutdown()
 	//Release the input object
 	if (_input)
 	{
+		_input->Shutdown();
 		delete _input;
 		_input = NULL;
 	}
@@ -96,24 +150,43 @@ void System::Run()
 			result = Frame();
 			if (!result)
 			{
+				MessageBox(_hWnd, L"Frame processing failed", L"Error", MB_OK);
 				done = true;
 			}
 		}
+
+		//Check to see if the user pressed escape and wants to quit
+		if (_input->IsEscapePressed())
+			done = true;
 	}
 }
 
 bool System::Frame()
 {
 	bool result;
+	int mouseX, mouseY;
 
-	//Check if the user pressed escape key (to quit)
-	if (_input->IsKeyDown(VK_ESCAPE))
+	//Update the system stats
+	_timer->Frame();
+	_fps->Frame();
+	_cpu->Frame();
+
+	//Do the input frame processing
+	result = _input->Frame();
+	if (!result)
 		return false;
+
+	//Get the location of the mouse from the input object
+	_input->GetMouseLocation(mouseX, mouseY);
 
 	//Do game processing here
 
 	//Do frame processing for the graphics object
-	result = _graphics->Frame();
+	result = _graphics->Frame(mouseX, mouseY, _fps->GetFps(), _cpu->GetCPUPercent(), _timer->GetTime());
+	if (!result)
+		return false;
+
+	result = _graphics->Render();
 	if (!result)
 		return false;
 
@@ -122,28 +195,7 @@ bool System::Frame()
 
 LRESULT CALLBACK System::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (umsg)
-	{
-		//Check if a key has been pressed on the keyboard
-	case WM_KEYDOWN:
-		{
-			_input->KeyDown((unsigned int)wParam);
-			return 0;
-		}
-
-		//Check if a key has been released on the keyboard
-	case WM_KEYUP:
-		{
-			_input->KeyUp((unsigned int)wParam);
-			return 0;
-		}
-
-		//Any other messages send to the default message handler as our application wont use them
-	default:
-		{
-			return DefWindowProc(hWnd, umsg, wParam, lParam);
-		}
-	}
+	return DefWindowProc(hWnd, umsg, wParam, lParam);
 }
 
 
@@ -221,7 +273,7 @@ void System::InitWindows(int& screenWidth, int& screenHeight)
 	SetFocus(_hWnd);
 
 	//Hide the mouse cursor
-	ShowCursor(false);
+	ShowCursor(true);
 }
 
 void System::ShutdownWindows()

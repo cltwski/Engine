@@ -76,8 +76,10 @@
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CPU.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontShader.cpp" />
+    <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="D3D.cpp" />
@@ -88,12 +90,15 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CPU.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontShader.h" />
+    <ClInclude Include="FPS.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="D3D.h" />
@@ -103,6 +108,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ColorPS.hlsl" />

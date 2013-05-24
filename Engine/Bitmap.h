@@ -26,6 +26,7 @@ public:
 
 	int GetIndexCount();
 	ID3D11ShaderResourceView* GetTexture();
+	GUID GetGuid();
 
 private:
 	ID3D11Buffer* _vertexBuffer;
@@ -33,6 +34,7 @@ private:
 	int _vertexCount;
 	int _indexCount;
 	Texture* _texture;
+	GUID _guid;
 
 	int _screenWidth, _screenHeight;
 	int _bitmapWidth, _bitmapHeight;

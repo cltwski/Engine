@@ -8,6 +8,9 @@
 #include "Input.h"
 #include "Graphics.h"
 #include "EngineSettings.h"
+#include "FPS.h"
+#include "CPU.h"
+#include "Timer.h"
 
 class System
 {
@@ -29,6 +32,9 @@ private:
 
 	Input* _input;
 	Graphics* _graphics;
+	FPS* _fps;
+	CPU* _cpu;
+	Timer* _timer;
 
 	bool Frame();
 	void InitWindows(int&, int&);

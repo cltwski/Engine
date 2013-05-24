@@ -4,9 +4,7 @@ Text::Text()
 {
 	_font = NULL;
 	_fontShader = NULL;
-	_sentence1 = NULL;
-	_sentence2 = NULL;
-	_sentence3 = NULL;
+	_sentence = NULL;
 }
 
 Text::Text(const Text& other)
@@ -15,15 +13,25 @@ Text::Text(const Text& other)
 Text::~Text()
 {}
 
-bool Text::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, int screenWidth, int screenHeight, D3DXMATRIX baseViewMatrix)
+bool Text::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, int screenWidth, int screenHeight, D3DXMATRIX baseViewMatrix, 
+	char* words, int startX, int startY, float r, float g, float b)
 {
 	bool result;
+
+	result = CoCreateGuid(&_guid);
+	if (FAILED(result))
+		return false;
 
 	//Store the screen width and heigh
 	_screenWidth = screenWidth;
 	_screenHeight = screenHeight;
 
 	_baseViewMatrix = baseViewMatrix;
+
+	_words = words;
+
+	_drawX = 0;
+	_drawY = 0;
 
 	//Create the font and font shader objects
 	_font = new Font();
@@ -49,30 +57,12 @@ bool Text::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND h
 	}
 
 	//Init the first sentence
-	result = InitSentence(&_sentence1, 16, device);
+	result = InitSentence(&_sentence, 32, device);
 	if (!result)
 		return false;
 
 	//Update the sentence vertex buffer with the new string info
-	result = UpdateSentence(_sentence1, "Test1", 420, 100, 1.0f, 0.0f, 1.0f, deviceContext);
-	if (!result)
-		return false;
-
-	//and now the second sentence
-	result = InitSentence(&_sentence2, 16, device);
-	if (!result)
-		return false;
-
-	//Update the sentence vertex buffer with the new string info
-	result = UpdateSentence(_sentence2, "Test2", 200, 200, 0.0f, 1.0f, 0.0f, deviceContext);
-	if (!result)
-		return false;
-
-	result = InitSentence(&_sentence3, 16, device);
-	if (!result)
-		return false;
-
-	result = UpdateSentence(_sentence3, "Test 3", 100, 600, 0.0f, 0.0f, 1.0f, deviceContext);
+	result = UpdateSentence(_words, startX, startY, 1.0f, 1.0f, 1.0f, deviceContext);
 	if (!result)
 		return false;
 
@@ -81,11 +71,7 @@ bool Text::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND h
 
 void Text::Shutdown()
 {
-	ReleaseSentence(&_sentence1);
-
-	ReleaseSentence(&_sentence2);
-
-	ReleaseSentence(&_sentence3);
+	ReleaseSentence(&_sentence);
 
 	if (_fontShader)
 	{
@@ -107,17 +93,8 @@ bool Text::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3
 	bool result;
 
 	// Draw the first sentence.
-	result = RenderSentence(deviceContext, _sentence1, worldMatrix, orthoMatrix);
+	result = RenderSentence(deviceContext, _sentence, worldMatrix, orthoMatrix);
 	if(!result)
-		return false;
-
-	// Draw the second sentence.
-	result = RenderSentence(deviceContext, _sentence2, worldMatrix, orthoMatrix);
-	if(!result)
-		return false;
-
-	result = RenderSentence(deviceContext, _sentence3, worldMatrix, orthoMatrix);
-	if (!result)
 		return false;
 
 	return true;
@@ -217,7 +194,98 @@ bool Text::InitSentence(Sentence** sentence, int maxLength, ID3D11Device* device
 	return true;
 }
 
-bool Text::UpdateSentence(Sentence* sentence, char* text, int posX, int posY, float red, float green, float blue,
+bool Text::UpdateSentence(char* text, ID3D11DeviceContext* deviceContext)
+{
+	int numLetters;
+	VertexTextureType* vertices;
+	HRESULT result;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	VertexTextureType* verticesPtr;
+
+	numLetters = (int)strlen(text);
+
+	if (numLetters > _sentence->maxLength)
+		return false;
+
+	vertices = new VertexTextureType[_sentence->vertexCount];
+	if (!vertices)
+		return false;
+
+	memset(vertices, 0, (sizeof(VertexTextureType) * _sentence->vertexCount));
+
+	_font->BuildVertexArray((void*)vertices, text, _drawX, _drawY);
+
+	result = deviceContext->Map(_sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+	// Get a pointer to the data in the vertex buffer.
+	verticesPtr = (VertexTextureType*)mappedResource.pData;
+
+	// Copy the data into the vertex buffer.
+	memcpy(verticesPtr, (void*)vertices, (sizeof(VertexTextureType) * _sentence->vertexCount));
+
+	// Unlock the vertex buffer.
+	deviceContext->Unmap(_sentence->vertexBuffer, 0);
+
+	// Release the vertex array as it is no longer needed.
+	delete [] vertices;
+	vertices = 0;
+
+	return true;
+}
+
+bool Text::UpdateSentence(char* text, float red, float green, float blue, ID3D11DeviceContext* deviceContext)
+{
+	int numLetters;
+	VertexTextureType* vertices;
+	HRESULT result;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	VertexTextureType* verticesPtr;
+
+	// Store the color of the sentence.
+	_sentence->r = red;
+	_sentence->g = green;
+	_sentence->b = blue;
+
+	// Get the number of letters in the sentence.
+	numLetters = (int)strlen(text);
+
+	// Check for possible buffer overflow.
+	if(numLetters > _sentence->maxLength)
+		return false;
+
+	// Create the vertex array.
+	vertices = new VertexTextureType[_sentence->vertexCount];
+	if(!vertices)
+		return false;
+
+	// Initialize vertex array to zeros at first.
+	memset(vertices, 0, (sizeof(VertexTextureType) * _sentence->vertexCount));
+
+	// Use the font class to build the vertex array from the sentence text and sentence draw location.
+	_font->BuildVertexArray((void*)vertices, text, _drawX, _drawY);
+
+	// Lock the vertex buffer so it can be written to.
+	result = deviceContext->Map(_sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if(FAILED(result))
+		return false;
+
+	// Get a pointer to the data in the vertex buffer.
+	verticesPtr = (VertexTextureType*)mappedResource.pData;
+
+	// Copy the data into the vertex buffer.
+	memcpy(verticesPtr, (void*)vertices, (sizeof(VertexTextureType) * _sentence->vertexCount));
+
+	// Unlock the vertex buffer.
+	deviceContext->Unmap(_sentence->vertexBuffer, 0);
+
+	// Release the vertex array as it is no longer needed.
+	delete [] vertices;
+	vertices = 0;
+
+	return true;
+}
+
+bool Text::UpdateSentence(char* text, int posX, int posY, float red, float green, float blue,
 			       ID3D11DeviceContext* deviceContext)
 {
 	int numLetters;
@@ -228,34 +296,36 @@ bool Text::UpdateSentence(Sentence* sentence, char* text, int posX, int posY, fl
 	VertexTextureType* verticesPtr;
 
 	// Store the color of the sentence.
-	sentence->r = red;
-	sentence->g = green;
-	sentence->b = blue;
+	_sentence->r = red;
+	_sentence->g = green;
+	_sentence->b = blue;
 
 	// Get the number of letters in the sentence.
 	numLetters = (int)strlen(text);
 
 	// Check for possible buffer overflow.
-	if(numLetters > sentence->maxLength)
+	if(numLetters > _sentence->maxLength)
 		return false;
 
 	// Create the vertex array.
-	vertices = new VertexTextureType[sentence->vertexCount];
+	vertices = new VertexTextureType[_sentence->vertexCount];
 	if(!vertices)
 		return false;
 
 	// Initialize vertex array to zeros at first.
-	memset(vertices, 0, (sizeof(VertexTextureType) * sentence->vertexCount));
+	memset(vertices, 0, (sizeof(VertexTextureType) * _sentence->vertexCount));
 
 	// Calculate the X and Y pixel position on the screen to start drawing to.
 	drawX = (float)(((_screenWidth / 2) * -1) + posX);
 	drawY = (float)((_screenHeight / 2) - posY);
+	_drawX = drawX;
+	_drawY = drawY;
 
 	// Use the font class to build the vertex array from the sentence text and sentence draw location.
-	_font->BuildVertexArray((void*)vertices, text, drawX, drawY);
+	_font->BuildVertexArray((void*)vertices, text, _drawX, _drawY);
 
 	// Lock the vertex buffer so it can be written to.
-	result = deviceContext->Map(sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(_sentence->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if(FAILED(result))
 		return false;
 
@@ -263,10 +333,10 @@ bool Text::UpdateSentence(Sentence* sentence, char* text, int posX, int posY, fl
 	verticesPtr = (VertexTextureType*)mappedResource.pData;
 
 	// Copy the data into the vertex buffer.
-	memcpy(verticesPtr, (void*)vertices, (sizeof(VertexTextureType) * sentence->vertexCount));
+	memcpy(verticesPtr, (void*)vertices, (sizeof(VertexTextureType) * _sentence->vertexCount));
 
 	// Unlock the vertex buffer.
-	deviceContext->Unmap(sentence->vertexBuffer, 0);
+	deviceContext->Unmap(_sentence->vertexBuffer, 0);
 
 	// Release the vertex array as it is no longer needed.
 	delete [] vertices;
@@ -334,4 +404,14 @@ bool Text::RenderSentence(ID3D11DeviceContext* deviceContext, Sentence* sentence
 	}
 
 	return true;
+}
+
+char* Text::GetWords()
+{
+	return _words;
+}
+
+GUID Text::GetGuid()
+{
+	return _guid;
 }
