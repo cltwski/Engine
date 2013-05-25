@@ -1,54 +1,24 @@
-#include "OldFontShader.h"
+#include "FontShader.h"
 
-OldFontShader::OldFontShader()
+
+FontShader::FontShader(void)
 {
-	_vertexShader = NULL;
-	_pixelShader = NULL;
-	_layout = NULL;
-	_constantBuffer = NULL;
+	Shader::Shader();
 	_samplerState = NULL;
 	_pixelBuffer = NULL;
+	_vsFilename = L"Data/Shaders/Vertex Shaders/FontVS.hlsl";
+	_psFilename = L"Data/Shaders/Pixel Shaders/FontPS.hlsl";
 }
 
-OldFontShader::OldFontShader(const OldFontShader&)
+FontShader::FontShader(const FontShader& other)
+{
+	Shader::Shader(other);
+}
+
+FontShader::~FontShader(void)
 {}
 
-OldFontShader::~OldFontShader()
-{}
-
-bool OldFontShader::Init(ID3D11Device* device, HWND hwnd)
-{
-	bool result;
-
-	result = InitShader(device, hwnd, L"FontVS.hlsl", L"FontPS.hlsl");
-	if (!result)
-		return false;
-
-	return true;
-}
-
-void OldFontShader::Shutdown()
-{
-	ShutdownShader();
-}
-
-bool OldFontShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, 
-	D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 pixelColor)
-{
-	bool result;
-
-	//Set the shader params
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, pixelColor);
-	if (!result)
-		return false;
-
-	//Now render the prepared buffers with the shader
-	RenderShader(deviceContext, indexCount);
-
-	return true;
-}
-
-bool OldFontShader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool FontShader::InitShader(ID3D11Device* device, HWND hwnd)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -67,27 +37,27 @@ bool OldFontShader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilenam
 	pixelShaderBuffer = NULL;
 
 	//Compile the vertex shader code
-	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "FontVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFile(_vsFilename, NULL, NULL, "FontVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 		&vertexShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
 		if (errorMessage)
-			OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
+			OutputShaderErrorMessage(errorMessage, hwnd, _vsFilename);
 		else
-			MessageBox(hwnd, vsFilename, L"Missing shader file", MB_OK);
+			MessageBox(hwnd, _vsFilename, L"Missing shader file", MB_OK);
 
 		return false;
 	}
 
 	//Compile the pixel shader code
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "FontPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFile(_psFilename, NULL, NULL, "FontPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 		&pixelShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
 		if (errorMessage)
-			OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
+			OutputShaderErrorMessage(errorMessage, hwnd, _psFilename);
 		else
-			MessageBox(hwnd, psFilename, L"Missing shader file", MB_OK);
+			MessageBox(hwnd, _psFilename, L"Missing shader file", MB_OK);
 
 		return false;
 	}
@@ -137,14 +107,14 @@ bool OldFontShader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilenam
 
 	// Setup the description of the dynamic constant buffer that is in the vertex shader.
 	constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	constantBufferDesc.ByteWidth = sizeof(ConstantBufferType);
+	constantBufferDesc.ByteWidth = sizeof(MatrixBufferT);
 	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	constantBufferDesc.MiscFlags = 0;
 	constantBufferDesc.StructureByteStride = 0;
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&constantBufferDesc, NULL, &_constantBuffer);
+	result = device->CreateBuffer(&constantBufferDesc, NULL, &_matrixBuffer);
 	if(FAILED(result))
 		return false;
 
@@ -170,7 +140,7 @@ bool OldFontShader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilenam
 
 	// Setup the description of the dynamic pixel constant buffer that is in the pixel shader.
 	pixelBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	pixelBufferDesc.ByteWidth = sizeof(PixelBufferType);
+	pixelBufferDesc.ByteWidth = sizeof(PixelBufferT);
 	pixelBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	pixelBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	pixelBufferDesc.MiscFlags = 0;
@@ -183,148 +153,92 @@ bool OldFontShader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilenam
 	return true;
 }
 
-void OldFontShader::ShutdownShader()
+void FontShader::ShutdownShader()
 {
+	//Release the pixel buffer
 	if (_pixelBuffer)
 	{
 		_pixelBuffer->Release();
 		_pixelBuffer = NULL;
 	}
 
+	//Release the sampler state
 	if (_samplerState)
 	{
 		_samplerState->Release();
 		_samplerState = NULL;
 	}
 
-	if (_constantBuffer)
-	{
-		_constantBuffer->Release();
-		_constantBuffer = NULL;
-	}
-
-	if (_layout)
-	{
-		_layout->Release();
-		_layout = NULL;
-	}
-
-	if (_pixelShader)
-	{
-		_pixelShader->Release();
-		_pixelShader = NULL;
-	}
-
-	if (_vertexShader)
-	{
-		_vertexShader->Release();
-		_vertexShader = NULL;
-	}
+	Shader::ShutdownShader();
 }
 
-void OldFontShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
-{
-	char* compileErrors;
-	unsigned long bufferSize, i;
-	std::ofstream fout;
-
-
-	// Get a pointer to the error message text buffer.
-	compileErrors = (char*)(errorMessage->GetBufferPointer());
-
-	// Get the length of the message.
-	bufferSize = errorMessage->GetBufferSize();
-
-	// Open a file to write the error message to.
-	fout.open("shader-error.txt");
-
-	// Write out the error message.
-	for(i=0; i<bufferSize; i++)
-	{
-		fout << compileErrors[i];
-	}
-
-	// Close the file.
-	fout.close();
-
-	// Release the error message.
-	errorMessage->Release();
-	errorMessage = 0;
-
-	// Pop a message up on the screen to notify the user to check the text file for compile errors.
-	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
-
-	return;
-}
-
-bool OldFontShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, 
-					  D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 pixelColor)
+bool FontShader::SetShaderParameters(ShaderParams params)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	ConstantBufferType* dataPtr;
+	MatrixBufferT* dataPtr;
 	unsigned int bufferNumber;
-	PixelBufferType* dataPtr2;
+	PixelBufferT* dataPtr2;
 
 
 	// Lock the constant buffer so it can be written to.
-	result = deviceContext->Map(_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = params.deviceContext->Map(_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
 	// Get a pointer to the data in the constant buffer.
-	dataPtr = (ConstantBufferType*)mappedResource.pData;
+	dataPtr = (MatrixBufferT*)mappedResource.pData;
 
 	// Transpose the matrices to prepare them for the shader.
-	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
-	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
-	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
+	D3DXMatrixTranspose(&params.worldMatrix, &params.worldMatrix);
+	D3DXMatrixTranspose(&params.viewMatrix, &params.viewMatrix);
+	D3DXMatrixTranspose(&params.projectionMatrix, &params.projectionMatrix);
 
 	// Copy the matrices into the constant buffer.
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
+	dataPtr->world = params.worldMatrix;
+	dataPtr->view = params.viewMatrix;
+	dataPtr->projection = params.projectionMatrix;
 
 	// Unlock the constant buffer.
-	deviceContext->Unmap(_constantBuffer, 0);
+	params.deviceContext->Unmap(_matrixBuffer, 0);
 
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
 
 	// Now set the constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_constantBuffer);
+	params.deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
 
 	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	params.deviceContext->PSSetShaderResources(0, 1, &params.texture);
 
 	// Lock the pixel constant buffer so it can be written to.
-	result = deviceContext->Map(_pixelBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = params.deviceContext->Map(_pixelBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
 	// Get a pointer to the data in the pixel constant buffer.
-	dataPtr2 = (PixelBufferType*)mappedResource.pData;
+	dataPtr2 = (PixelBufferT*)mappedResource.pData;
 
 	// Copy the pixel color into the pixel constant buffer.
-	dataPtr2->pixelColor = pixelColor;
+	dataPtr2->pixelColor = params.pixelColor;
 
 	// Unlock the pixel constant buffer.
-	deviceContext->Unmap(_pixelBuffer, 0);
+	params.deviceContext->Unmap(_pixelBuffer, 0);
 
 	// Set the position of the pixel constant buffer in the pixel shader.
 	bufferNumber = 0;
 
 	// Now set the pixel constant buffer in the pixel shader with the updated value.
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_pixelBuffer);
+	params.deviceContext->PSSetConstantBuffers(bufferNumber, 1, &_pixelBuffer);
 
 	return true;
 }
 
-void OldFontShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void FontShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(_layout);

@@ -4,6 +4,8 @@
 ColorShader::ColorShader(void)
 {
 	Shader::Shader();
+	_vsFilename = L"Data/Shaders/Vertex Shaders/ColorVS.hlsl";
+	_psFilename = L"Data/Shaders/Pixel Shaders/ColorPS.hlsl";
 }
 
 ColorShader::ColorShader(const ColorShader& other)
@@ -11,13 +13,12 @@ ColorShader::ColorShader(const ColorShader& other)
 	Shader::Shader(other);
 }
 
-
 ColorShader::~ColorShader(void)
 {}
 
-bool ColorShader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool ColorShader::InitShader(ID3D11Device* device, HWND hwnd)
 {
-	Shader::InitShader(device, hwnd, vsFilename, psFilename);
+	Shader::InitShader(device, hwnd);
 }
 
 void ColorShader::ShutdownShader()

@@ -76,12 +76,18 @@
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ColorShader.cpp" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="OldFontShader.cpp" />
+    <ClCompile Include="OldTextureShader.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Text.cpp" />
-    <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="EngineSettings.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -90,17 +96,26 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ColorShader.h" />
     <ClInclude Include="CPU.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="FontManager.h" />
     <ClInclude Include="FontShader.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="OldFontShader.h" />
+    <ClInclude Include="OldTextureShader.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="ShaderParams.h" />
     <ClInclude Include="Text.h" />
-    <ClInclude Include="TextureShader.h" />
     <ClInclude Include="D3D.h" />
     <ClInclude Include="EngineSettings.h" />
     <ClInclude Include="Graphics.h" />
@@ -108,19 +123,23 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TextureShader.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ColorPS.hlsl" />
-    <None Include="ColorVS.hlsl" />
-    <None Include="FontPS.hlsl" />
-    <None Include="FontVS.hlsl" />
+    <None Include="Data\Fonts\font.dds" />
+    <None Include="Data\Fonts\fontdata.txt" />
+    <None Include="Data\Shaders\Pixel Shaders\ColorPS.hlsl" />
+    <None Include="Data\Shaders\Pixel Shaders\FontPS.hlsl" />
+    <None Include="Data\Shaders\Pixel Shaders\TexturePS.hlsl" />
+    <None Include="Data\Shaders\Vertex Shaders\ColorVS.hlsl" />
+    <None Include="Data\Shaders\Vertex Shaders\FontVS.hlsl" />
+    <None Include="Data\Shaders\Vertex Shaders\TextureVS.hlsl" />
     <None Include="Settings.ini" />
     <None Include="shader-error.txt" />
-    <None Include="TexturePS.hlsl" />
     <None Include="Textures\Grass.dds" />
     <None Include="Textures\seafloor.dds" />
-    <None Include="TextureVS.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

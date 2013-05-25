@@ -14,16 +14,16 @@ Shader::Shader(const Shader& other)
 Shader::~Shader()
 {}
 
-bool Shader::Init(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool Shader::Init(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
 	//Set the filenames
-	_vsFilename = vsFilename;
-	_psFilename = psFilename;
+	_vsFilename = L"";
+	_psFilename = L"";
 
 	//Init the shaders
-	result = InitShader(device, hwnd, _vsFilename, _psFilename);
+	result = InitShader(device, hwnd);
 	if (!result)
 		return false;
 
@@ -35,7 +35,7 @@ void Shader::Shutdown()
 	ShutdownShader();
 }
 
-bool Shader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHAR* psFileName)
+bool Shader::InitShader(ID3D11Device* device, HWND hwnd)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -44,7 +44,6 @@ bool Shader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHA
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
-	D3D11_SAMPLER_DESC samplerDesc;
 
 	//Init pointers to null
 	errorMessage = NULL;
@@ -52,34 +51,34 @@ bool Shader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHA
 	pixelShaderBuffer = NULL;
 
 	//Compile the vertex shader code
-	result = D3DX10CompileFromFile(vsFileName, NULL, NULL, "TextureVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &vertexShaderBuffer, &errorMessage, NULL);
+	result = D3DX10CompileFromFile(_vsFilename, NULL, NULL, "ColorVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &vertexShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
 		//if the shader failed it should have wrriten to the error message
 		if (errorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage, hwnd, vsFileName);
+			OutputShaderErrorMessage(errorMessage, hwnd, _vsFilename);
 		}
 		//if there was nothing in the error message then it simply could not find the shader file itself
 		else
 		{
-			MessageBox(hwnd, vsFileName, L"Missing Vertex Shader File", MB_OK);
+			MessageBox(hwnd, _vsFilename, L"Missing Vertex Shader File", MB_OK);
 		}
 
 		return false;
 	}
 
 	//Compile the pixel shader code
-	result = D3DX10CompileFromFile(psFileName, NULL, NULL, "TexturePixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &pixelShaderBuffer, &errorMessage, NULL);
+	result = D3DX10CompileFromFile(_psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &pixelShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
 		if (errorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage, hwnd, psFileName);
+			OutputShaderErrorMessage(errorMessage, hwnd, _psFilename);
 		}
 		else
 		{
-			MessageBox(hwnd, psFileName, L"Missing Pixel Shader File", MB_OK);
+			MessageBox(hwnd, _psFilename, L"Missing Pixel Shader File", MB_OK);
 		}
 		
 		return false;
@@ -94,8 +93,8 @@ bool Shader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHA
 	if (FAILED(result))
 		return false;
 
-	//Now setup the layout of the data that goes into the shader
-	//This setup needs to match the VertexType struct in the ModelClass and in the shader
+	// Now setup the layout of the data that goes into the shader.
+	// This setup needs to match the VertexType stucture in the ModelClass and in the shader.
 	polygonLayout[0].SemanticName = "POSITION";
 	polygonLayout[0].SemanticIndex = 0;
 	polygonLayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -104,9 +103,9 @@ bool Shader::InitShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHA
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
 
-	polygonLayout[1].SemanticName = "TEXCOORD";
+	polygonLayout[1].SemanticName = "COLOR";
 	polygonLayout[1].SemanticIndex = 0;
-	polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonLayout[1].InputSlot = 0;
 	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -265,4 +264,14 @@ bool Shader::SetShaderParameters(ShaderParams params)
 	params.deviceContext->VSSetConstantBuffers(bufferNumber, 1, &_matrixBuffer);
 
 	return true;
+}
+
+WCHAR* Shader::GetVsFilename()
+{
+	return _vsFilename;
+}
+
+WCHAR* Shader::GetPsFilename()
+{
+	return _psFilename;
 }

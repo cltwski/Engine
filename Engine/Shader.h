@@ -23,9 +23,12 @@ public:
 	Shader(const Shader&);
 	~Shader();
 
-	bool Init(ID3D11Device*, HWND, WCHAR*, WCHAR*);
+	bool Init(ID3D11Device*, HWND);
 	void Shutdown();
 	bool Render(ShaderParams, int);
+
+	WCHAR* GetVsFilename();
+	WCHAR* GetPsFilename();
 
 protected:
 	WCHAR* _vsFilename;
@@ -35,7 +38,7 @@ protected:
 	ID3D11InputLayout* _layout;
 	ID3D11Buffer* _matrixBuffer;
 
-	virtual bool InitShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
+	virtual bool InitShader(ID3D11Device*, HWND);
 	virtual void ShutdownShader();
 	virtual bool SetShaderParameters(ShaderParams);
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);

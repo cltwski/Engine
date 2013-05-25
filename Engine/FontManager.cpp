@@ -1,7 +1,9 @@
 #include "FontManager.h"
 
 FontManager::FontManager()
-{}
+{
+	_device = NULL;
+}
 
 FontManager& FontManager::GetInstance()
 {
@@ -9,33 +11,40 @@ FontManager& FontManager::GetInstance()
 	return instance;
 }
 
-void FontManager::AddFont(Font& font, const char* name)
+void FontManager::Init(ID3D11Device* device)
 {
-	int id = Hash(name);
-	_fonts.insert(std::make_pair<int, Font>(id, font));
+	_device = device;
+}
+
+void FontManager::Shutdown()
+{
+	for (auto it = _fonts.begin(); it != _fonts.end(); ++it)
+	{
+		it->second.Shutdown();
+	}
+	_fonts.clear();
+}
+
+bool FontManager::AddFont(char* fontFilename, char* textureName, const char* name)
+{
+	Font font;
+	bool result;
+
+	result = font.Init(_device, fontFilename, textureName);
+	if (!result)
+		return false;
+
+	_fonts.insert(std::make_pair<const char*, Font>(name, font));
+
+	return true;
 }
 
 Font* FontManager::GetFont(const char* name)
 {
-	int id = Hash(name);
-	return &_fonts[id];
+	return &_fonts[name];
 }
 
 void FontManager::RemoveFont(const char* name)
 {
-	int id = Hash(name);
-	_fonts.erase(id);
-}
-
-int FontManager::Hash(const char* str)
-{
-	//dbj2
-	unsigned long hash = 5381;
-	int c;
-
-	while (c = *str++)
-	{
-		hash = ((hash << 5) + hash) + c;
-	}
-	return hash;
+	_fonts.erase(name);
 }

@@ -11,4 +11,5 @@ struct ShaderParams
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
 	ID3D11ShaderResourceView* texture;
+	D3DXVECTOR4 pixelColor;
 };

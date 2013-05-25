@@ -5,7 +5,7 @@
 #include <D3DX10math.h>
 
 #include "Font.h"
-#include "FontShader.h"
+#include "OldFontShader.h"
 
 class Text
 {
@@ -41,7 +41,7 @@ public:
 
 protected:
 	Font* _font;
-	FontShader* _fontShader;
+	OldFontShader* _fontShader;
 	int _screenHeight, _screenWidth;
 	float _drawX, _drawY;
 	D3DXMATRIX _baseViewMatrix;

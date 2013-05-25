@@ -16,23 +16,83 @@
     <Filter Include="ini Files">
       <UniqueIdentifier>{bf6594f8-7362-4236-90dd-522d5096d8ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{2a2c9188-d26d-4935-98c2-3ec19e5a5d90}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Vertex Shaders">
-      <UniqueIdentifier>{13f5751d-9d5d-42a2-ab2b-eff2bf0cfc2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Pixel Shaders">
-      <UniqueIdentifier>{2ff0ca73-dd38-4f1b-9943-a7e5e08675a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Textures">
-      <UniqueIdentifier>{b390da0b-63ae-46b5-9b7c-177037db5b89}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Outputs">
       <UniqueIdentifier>{44574f24-9f36-4a74-8d34-019ab75d2da5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Data">
       <UniqueIdentifier>{fae30fcc-46e4-4158-82f5-40d97a90b321}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{ec17083f-cad5-4534-af9c-4c95d57be768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Textures">
+      <UniqueIdentifier>{b390da0b-63ae-46b5-9b7c-177037db5b89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Old">
+      <UniqueIdentifier>{d1a165e3-b8cd-4271-b279-bf545500e8d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{318e28c8-246f-49e4-8abc-f397e32441f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Header Files">
+      <UniqueIdentifier>{e7eab100-244b-4d2f-9ef6-2f6976909d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Source Files">
+      <UniqueIdentifier>{cac1dcd5-9381-4961-9eaf-749a5b5a20a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Textures\Textures">
+      <UniqueIdentifier>{be12d9db-adbd-480b-bef8-71d948874662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Textures\Header Files">
+      <UniqueIdentifier>{ba7e1b59-14a3-4194-a311-27157552087a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Textures\Source Files">
+      <UniqueIdentifier>{57cc7bca-1168-4643-8aba-2553dc0249ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders">
+      <UniqueIdentifier>{d4bd3246-3391-411a-8d78-6e39231cab21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders\HLSL">
+      <UniqueIdentifier>{86cdd71b-d580-4ad1-9e9b-3a51aa5f2ae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders\HLSL\Pixel Shaders">
+      <UniqueIdentifier>{2ff0ca73-dd38-4f1b-9943-a7e5e08675a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders\HLSL\Vertex Shaders">
+      <UniqueIdentifier>{13f5751d-9d5d-42a2-ab2b-eff2bf0cfc2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders\Header Files">
+      <UniqueIdentifier>{0e6355d7-9c37-4159-940d-f65cc5c4e423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders\Source Files">
+      <UniqueIdentifier>{1113b0ed-a772-457b-9095-86f4e5434063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Fonts">
+      <UniqueIdentifier>{528fdc26-1591-46a1-a5bb-0d5b3d6a7b22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Fonts\Header Files">
+      <UniqueIdentifier>{f03a3641-5dd6-4833-bcaf-ac47d99dabc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Fonts\Source Files">
+      <UniqueIdentifier>{95b3e8f2-fabf-4c15-af99-12c1b96cef7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Fonts\Fonts">
+      <UniqueIdentifier>{e1507142-3df9-4643-9265-c366b1eaf115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Fonts\Fonts\Standard">
+      <UniqueIdentifier>{8c686794-bb49-40ba-8a6f-d8688eca6a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\GUI">
+      <UniqueIdentifier>{650ef4bf-01ef-41e6-ae31-90bde0e7e059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\GUI\Text">
+      <UniqueIdentifier>{b6ba6f2a-dac3-41f4-8191-39b4866228f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\GUI\Text\Header Files">
+      <UniqueIdentifier>{7674bc4d-f9ff-4d26-bf18-271db6f9a139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\GUI\Text\Source Files">
+      <UniqueIdentifier>{7c53973e-dcb1-47e3-8054-d572e172d7e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,32 +120,56 @@
     <ClCompile Include="System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Bitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ColorShader.cpp">
+      <Filter>Graphics\Shaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureShader.cpp">
+      <Filter>Graphics\Shaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Graphics\Shaders\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FontShader.cpp">
+      <Filter>Graphics\Shaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OldTextureShader.cpp">
+      <Filter>Old</Filter>
+    </ClCompile>
+    <ClCompile Include="OldFontShader.cpp">
+      <Filter>Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Utils\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPU.cpp">
+      <Filter>Utils\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FPS.cpp">
+      <Filter>Utils\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Graphics\Shaders\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Graphics\Textures\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Graphics\Textures\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FontManager.cpp">
+      <Filter>Graphics\Fonts\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Graphics\Fonts\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FPS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CPU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Graphics\GUI\Text\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,64 +194,97 @@
     <ClInclude Include="System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Text.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ColorShader.h">
+      <Filter>Graphics\Shaders\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Shader.h">
+      <Filter>Graphics\Shaders\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderParams.h">
+      <Filter>Graphics\Shaders\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureShader.h">
+      <Filter>Graphics\Shaders\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FontShader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Graphics\Shaders\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FPS.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="OldTextureShader.h">
+      <Filter>Old</Filter>
     </ClInclude>
-    <ClInclude Include="CPU.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="OldFontShader.h">
+      <Filter>Old</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
+      <Filter>Utils\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPS.h">
+      <Filter>Utils\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPU.h">
+      <Filter>Utils\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Graphics\Shaders\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Graphics\Textures\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Graphics\Textures\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>Graphics\Fonts\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Graphics\Fonts\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Graphics\GUI\Text\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.ini">
       <Filter>ini Files</Filter>
     </None>
-    <None Include="ColorPS.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </None>
-    <None Include="ColorVS.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </None>
-    <None Include="Textures\seafloor.dds">
-      <Filter>Textures</Filter>
-    </None>
-    <None Include="TextureVS.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
-    </None>
-    <None Include="TexturePS.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
-    </None>
     <None Include="shader-error.txt">
       <Filter>Outputs</Filter>
     </None>
+    <None Include="Data\Shaders\Pixel Shaders\ColorPS.hlsl">
+      <Filter>Graphics\Shaders\HLSL\Pixel Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\Pixel Shaders\FontPS.hlsl">
+      <Filter>Graphics\Shaders\HLSL\Pixel Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\Pixel Shaders\TexturePS.hlsl">
+      <Filter>Graphics\Shaders\HLSL\Pixel Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\Vertex Shaders\ColorVS.hlsl">
+      <Filter>Graphics\Shaders\HLSL\Vertex Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\Vertex Shaders\FontVS.hlsl">
+      <Filter>Graphics\Shaders\HLSL\Vertex Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\Vertex Shaders\TextureVS.hlsl">
+      <Filter>Graphics\Shaders\HLSL\Vertex Shaders</Filter>
+    </None>
+    <None Include="Textures\seafloor.dds">
+      <Filter>Graphics\Textures\Textures</Filter>
+    </None>
     <None Include="Textures\Grass.dds">
-      <Filter>Textures</Filter>
+      <Filter>Graphics\Textures\Textures</Filter>
     </None>
-    <None Include="FontVS.hlsl">
-      <Filter>Shaders\Vertex Shaders</Filter>
+    <None Include="Data\Fonts\fontdata.txt">
+      <Filter>Graphics\Fonts\Fonts\Standard</Filter>
     </None>
-    <None Include="FontPS.hlsl">
-      <Filter>Shaders\Pixel Shaders</Filter>
+    <None Include="Data\Fonts\font.dds">
+      <Filter>Graphics\Fonts\Fonts\Standard</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ Font::Font(const Font&)
 Font::~Font()
 {}
 
-bool Font::Init(ID3D11Device* device, char* fontFilename, WCHAR* textureFilename)
+bool Font::Init(ID3D11Device* device, char* fontFilename, char* textureName)
 {
 	bool result;
 
@@ -21,7 +21,7 @@ bool Font::Init(ID3D11Device* device, char* fontFilename, WCHAR* textureFilename
 		return false;
 
 	//Load the texture that has the font characters on it
-	result = LoadTexture(device, textureFilename);
+	result = LoadTexture(device, textureName);
 	if (!result)
 		return false;
 
@@ -30,8 +30,6 @@ bool Font::Init(ID3D11Device* device, char* fontFilename, WCHAR* textureFilename
 
 void Font::Shutdown()
 {
-	ReleaseTexture();
-
 	ReleaseFontData();
 }
 
@@ -42,7 +40,7 @@ bool Font::LoadFontData(char* filename)
 	char temp;
 
 	//Create the font spacing buffer
-	_font = new FontType[95];
+	_font = new FontT[95];
 	if (!_font)
 		return false;
 
@@ -80,39 +78,16 @@ void Font::ReleaseFontData()
 	}
 }
 
-bool Font::LoadTexture(ID3D11Device* device, WCHAR* filename)
+bool Font::LoadTexture(ID3D11Device* device, char* textureName)
 {
 	bool result;
 
-
 	// Create the texture object.
-	_texture = new Texture();
+	_texture = TextureManager::GetInstance().GetTexture(textureName);
 	if(!_texture)
-	{
 		return false;
-	}
-
-	// Initialize the texture object.
-	result = _texture->Init(device, filename);
-	if(!result)
-	{
-		return false;
-	}
 
 	return true;
-}
-
-void Font::ReleaseTexture()
-{
-	// Release the texture object.
-	if(_texture)
-	{
-		_texture->Shutdown();
-		delete _texture;
-		_texture = 0;
-	}
-
-	return;
 }
 
 ID3D11ShaderResourceView* Font::GetTexture()
@@ -123,11 +98,11 @@ ID3D11ShaderResourceView* Font::GetTexture()
 
 void Font::BuildVertexArray(void* vertices, char* sentence, float drawX, float drawY)
 {
-	VertexTextureType* vertexPtr;
+	VertexTextureT* vertexPtr;
 	int numLetters, index, i, letter;
 
 	//Coerce the input vertices into a VertexTextureTpye structure
-	vertexPtr = (VertexTextureType*)vertices;
+	vertexPtr = (VertexTextureT*)vertices;
 
 	//Get the number of letters in the sentence
 	numLetters = (int)std::strlen(sentence);

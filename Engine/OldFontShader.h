@@ -6,7 +6,7 @@
 #include <d3dx11async.h>
 #include <fstream>
 
-class FontShader
+class OldFontShader
 {
 private:
 	struct ConstantBufferType
@@ -22,9 +22,9 @@ private:
 	};
 
 public:
-	FontShader();
-	FontShader(const FontShader&);
-	~FontShader();
+	OldFontShader();
+	OldFontShader(const OldFontShader&);
+	~OldFontShader();
 
 	bool Init(ID3D11Device*, HWND);
 	void Shutdown();

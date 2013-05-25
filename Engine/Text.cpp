@@ -45,7 +45,7 @@ bool Text::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND h
 		return false;
 	}
 
-	_fontShader = new FontShader();
+	_fontShader = new OldFontShader();
 	if (!_fontShader)
 		return false;
 

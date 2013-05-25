@@ -1,6 +1,7 @@
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
 
+#include <D3D11.h>
 #include <unordered_map>
 
 #include "Font.h"
@@ -9,8 +10,10 @@ class FontManager
 {
 public:
 	static FontManager& GetInstance();
+	void Init(ID3D11Device*);
+	void Shutdown();
 
-	void AddFont(Font&, const char*);
+	bool AddFont(char*, char*, const char*);
 	Font* GetFont(const char*);
 	void RemoveFont(const char*);
 
@@ -19,8 +22,7 @@ private:
 	FontManager(const FontManager&);
 	void operator=(const FontManager&);
 	
-	std::unordered_map<int, Font> _fonts;
-
-	int Hash(const char*);
+	ID3D11Device* _device;
+	std::unordered_map<const char*, Font> _fonts;
 };
 #endif

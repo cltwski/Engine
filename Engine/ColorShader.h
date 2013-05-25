@@ -2,7 +2,6 @@
 
 #include "Shader.h"
 
-
 class ColorShader : public Shader
 {
 public:
@@ -11,9 +10,8 @@ public:
 	~ColorShader(void);
 
 private:
-	bool InitShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
+	bool InitShader(ID3D11Device*, HWND);
 	void ShutdownShader();
 	bool SetShaderParameters(ShaderParams);
 	void RenderShader(ID3D11DeviceContext*, int);
 };
-
