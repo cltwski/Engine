@@ -2,16 +2,15 @@
 
 #include "Shader.h"
 
-class TextureShader : public Shader
+
+class ColorShader : public Shader
 {
 public:
-	TextureShader(void);
-	TextureShader(const TextureShader&);
-	~TextureShader(void);
+	ColorShader(void);
+	ColorShader(const ColorShader&);
+	~ColorShader(void);
 
 private:
-	ID3D11SamplerState* _samplerState;
-
 	bool InitShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
 	void ShutdownShader();
 	bool SetShaderParameters(ShaderParams);

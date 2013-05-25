@@ -16,8 +16,6 @@ public:
 	int GetWindowY();
 
 private:
-	static EngineSettings* instance;
-
 	EngineSettings();
 	EngineSettings(EngineSettings const&);
 	void operator=(EngineSettings const&);

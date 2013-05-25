@@ -7,7 +7,7 @@
 #include "Model.h"
 #include "Bitmap.h"
 #include "Text.h"
-#include "TextureShader.h"
+#include "OldTextureShader.h"
 
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -35,7 +35,7 @@ private:
 	Text* _textFps;
 	Text* _textCpu;
 
-	TextureShader* _textureShader;
+	OldTextureShader* _OldTextureShader;
 };
 
 #endif

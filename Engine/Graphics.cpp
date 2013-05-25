@@ -6,7 +6,7 @@ Graphics::Graphics()
 	_camera = NULL;
 	_model = NULL;
 	_bitmap = NULL;
-	_textureShader = NULL;
+	_OldTextureShader = NULL;
 	_text1 = NULL;
 	_text2 = NULL;
 	_textFps = NULL;
