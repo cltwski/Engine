@@ -7,11 +7,15 @@
 #include "Model.h"
 #include "Bitmap.h"
 #include "Text.h"
-#include "OldTextureShader.h"
+#include "FontManager.h"
+#include "ShaderManager.h"
+#include "TextureManager.h"
+#include "FontShader.h"
 
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
 
+class FontShader;
 
 class Graphics
 {
@@ -32,10 +36,6 @@ private:
 	Bitmap* _bitmap;
 	Text* _text1;
 	Text* _text2;
-	Text* _textFps;
-	Text* _textCpu;
-
-	OldTextureShader* _OldTextureShader;
 };
 
 #endif

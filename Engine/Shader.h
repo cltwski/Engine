@@ -23,7 +23,7 @@ public:
 	Shader(const Shader&);
 	~Shader();
 
-	bool Init(ID3D11Device*, HWND);
+	virtual bool Init(ID3D11Device*, HWND);
 	void Shutdown();
 	bool Render(ShaderParams, int);
 

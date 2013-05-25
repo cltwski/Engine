@@ -274,6 +274,9 @@ void System::InitWindows(int& screenWidth, int& screenHeight)
 
 	//Hide the mouse cursor
 	ShowCursor(true);
+
+	EngineSettings::GetInstance().SetCurrentWindowX(screenWidth);
+	EngineSettings::GetInstance().SetCurrentWindowY(screenHeight);
 }
 
 void System::ShutdownWindows()

@@ -15,6 +15,8 @@ public:
 	FontShader(const FontShader&);
 	~FontShader(void);
 
+	bool Init(ID3D11Device*, HWND);
+
 private:
 	ID3D11SamplerState* _samplerState;
 	ID3D11Buffer* _pixelBuffer;

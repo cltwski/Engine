@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "Shader.h"
+#include "FontShader.h"
 
 class ShaderManager
 {
@@ -12,7 +13,7 @@ public:
 	void Init(ID3D11Device*);
 	void Shutdown();
 	
-	bool AddShader(Shader, HWND, const char*);
+	bool AddShader(Shader*, HWND, const char*);
 	Shader* GetShader(const char*);
 	void RemoveShader(const char*);
 
@@ -22,5 +23,5 @@ private:
 	void operator=(const ShaderManager&);
 
 	ID3D11Device* _device;
-	std::unordered_map<const char*, Shader> _shaders;
+	std::unordered_map<const char*, Shader*> _shaders;
 };

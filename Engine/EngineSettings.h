@@ -14,6 +14,10 @@ public:
 	bool GetVsync();
 	int GetWindowX();
 	int GetWindowY();
+	int GetCurrentWindowX();
+	int GetCurrentWindowY();
+	void SetCurrentWindowX(int);
+	void SetCurrentWindowY(int);
 
 private:
 	EngineSettings();
@@ -25,6 +29,8 @@ private:
 	bool _vsync;
 	int _windowX;
 	int _windowY;
+	int _currentWindowX;
+	int _currentWindowY;
 };
 
 #endif

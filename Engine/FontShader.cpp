@@ -6,8 +6,6 @@ FontShader::FontShader(void)
 	Shader::Shader();
 	_samplerState = NULL;
 	_pixelBuffer = NULL;
-	_vsFilename = L"Data/Shaders/Vertex Shaders/FontVS.hlsl";
-	_psFilename = L"Data/Shaders/Pixel Shaders/FontPS.hlsl";
 }
 
 FontShader::FontShader(const FontShader& other)
@@ -17,6 +15,22 @@ FontShader::FontShader(const FontShader& other)
 
 FontShader::~FontShader(void)
 {}
+
+bool FontShader::Init(ID3D11Device* device, HWND hwnd)
+{
+	bool result;
+
+	//Set the filenames
+	_vsFilename = L"Data/Shaders/Vertex Shaders/FontVS.hlsl";
+	_psFilename = L"Data/Shaders/Pixel Shaders/FontPS.hlsl";
+
+	//Init the shaders
+	result = InitShader(device, hwnd);
+	if (!result)
+		return false;
+
+	return true;
+}
 
 bool FontShader::InitShader(ID3D11Device* device, HWND hwnd)
 {

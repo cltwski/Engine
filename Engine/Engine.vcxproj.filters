@@ -94,6 +94,15 @@
     <Filter Include="Graphics\GUI\Text\Source Files">
       <UniqueIdentifier>{7c53973e-dcb1-47e3-8054-d572e172d7e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics\System">
+      <UniqueIdentifier>{63e67bb4-bde7-4684-b822-310f9cd3ed56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\System\Source Files">
+      <UniqueIdentifier>{6e19653f-9f21-4498-afd4-ff61e8903979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\System\Header Files">
+      <UniqueIdentifier>{50a72f0f-ce24-4a57-bd63-28b4dba7947f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -165,11 +174,14 @@
     <ClCompile Include="Font.cpp">
       <Filter>Graphics\Fonts\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicsResourceManager.cpp">
+      <Filter>Graphics\System\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Graphics\GUI\Text\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OldText.cpp">
+      <Filter>Old</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -242,11 +254,14 @@
     <ClInclude Include="Font.h">
       <Filter>Graphics\Fonts\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GraphicsResourceManager.h">
+      <Filter>Graphics\System\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Text.h">
       <Filter>Graphics\GUI\Text\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OldText.h">
+      <Filter>Old</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,11 +6,8 @@ Graphics::Graphics()
 	_camera = NULL;
 	_model = NULL;
 	_bitmap = NULL;
-	_OldTextureShader = NULL;
 	_text1 = NULL;
 	_text2 = NULL;
-	_textFps = NULL;
-	_textCpu = NULL;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -47,45 +44,56 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 	_camera->Render();
 	_camera->GetViewMatrix(baseViewMatrix);
 
+	//Init Font texture
+	TextureManager::GetInstance().Init(_d3d->GetDevice());
+	result = TextureManager::GetInstance().AddTexture(L"Data/Fonts/font.dds", "StandardFont");
+	if (!result)
+	{
+		MessageBox(hWnd, L"Could not add texture", L"Error", MB_OK);
+		return false;
+	}
 
-	//Init the two text objects
+	//Init the font shader
+	ShaderManager::GetInstance().Init(_d3d->GetDevice());
+	result = ShaderManager::GetInstance().AddShader(new FontShader(), hWnd, "Font");
+	if (!result)
+	{
+		MessageBox(hWnd, L"Could not add shader", L"Error", MB_OK);
+		return false;
+	}
+
+	//Init the font
+	FontManager::GetInstance().Init(_d3d->GetDevice());
+	result = FontManager::GetInstance().AddFont("Data/Fonts/fontdata.txt", "StandardFont", "Standard");
+	if (!result)
+	{
+		MessageBox(hWnd, L"Could not add font", L"Error", MB_OK);
+		return false;
+	}
+
+	//Init the text
 	_text1 = new Text();
 	if (!_text1)
 		return false;
 
-	result = _text1->Init(_d3d->GetDevice(), _d3d->GetDeviceContext(), hWnd, screenWidth, screenHeight, baseViewMatrix,"", 20, 20);
+	result = _text1->Init(_d3d->GetDevice(), _d3d->GetDeviceContext(), hWnd, "Standard", "Font", baseViewMatrix, "", 20, 20, 1.0f, 1.0f, 1.0f);
 	if (!result)
 	{
-		MessageBox(hWnd, L"Could not init the text object", L"Error", MB_OK);
+		MessageBox(hWnd, L"Could not init text1", L"Error", MB_OK);
 		return false;
 	}
 
+	//Init the text
 	_text2 = new Text();
 	if (!_text2)
 		return false;
 
-	result = _text2->Init(_d3d->GetDevice(), _d3d->GetDeviceContext(), hWnd, screenWidth, screenHeight, baseViewMatrix, "", 20, 40);
+	result = _text2->Init(_d3d->GetDevice(), _d3d->GetDeviceContext(), hWnd, "Standard", "Font", baseViewMatrix, "", 20, 40, 1.0f, 1.0f, 1.0f);
 	if (!result)
 	{
-		MessageBox(hWnd, L"Could not init the second text object", L"Error", MB_OK);
+		MessageBox(hWnd, L"Could not init text2", L"Error", MB_OK);
 		return false;
 	}
-
-	_textFps = new Text();
-	if (!_textFps)
-		return false;
-
-	result = _textFps->Init(_d3d->GetDevice(), _d3d->GetDeviceContext(), hWnd, screenWidth, screenHeight, baseViewMatrix, "", screenWidth-100, 20);
-	if (!result)
-		return false;
-
-	_textCpu = new Text();
-	if (!result)
-		return false;
-
-	result = _textCpu->Init(_d3d->GetDevice(), _d3d->GetDeviceContext(), hWnd, screenWidth, screenHeight, baseViewMatrix, "", screenWidth-100, 40);
-	if (!result)
-		return false;
 
 	return true;
 }
@@ -104,20 +112,6 @@ void Graphics::Shutdown()
 		_text2->Shutdown();
 		delete _text2;
 		_text2 = NULL;
-	}
-
-	if (_textFps)
-	{
-		_textFps->Shutdown();
-		delete _textFps;
-		_textFps = NULL;
-	}
-
-	if (_textCpu)
-	{
-		_textCpu->Shutdown();
-		delete _textCpu;
-		_textFps = NULL;
 	}
 
 	if (_camera)
@@ -144,59 +138,14 @@ bool Graphics::Frame(int mouseX, int mouseY, int fps, int cpu, float timer)
 	_itoa_s(mouseX, tempString, 10);
 	strcpy_s(mouseString, "Mouse X:");
 	strcat_s(mouseString, tempString);
-	result = _text1->UpdateSentence(mouseString, _d3d->GetDeviceContext());
+	result = _text1->UpdateWords(mouseString, _d3d->GetDeviceContext());
 	if (!result)
 		return false;
 
 	_itoa_s(mouseY, tempString, 10);
 	strcpy_s(mouseString, "Mouse Y:");
 	strcat_s(mouseString, tempString);
-	result = _text2->UpdateSentence(mouseString, _d3d->GetDeviceContext());
-	if (!result)
-		return false;
-
-	char fpsString[32];
-	float r,g,b;
-
-	if (fps > 9999)
-		fps = 9999;
-
-	_itoa_s(fps, tempString, 10);
-	strcpy_s(fpsString, "Fps: ");
-	strcat_s(fpsString, tempString);
-
-	if (fps >= 60)
-	{
-		r = 0.0f;
-		g = 1.0f;
-		b = 0.0f;
-	}
-
-	if (fps < 60 && fps >= 30)
-	{
-		r = 1.0f;
-		g = 1.0f;
-		b = 0.0f;
-	}
-	else if (fps < 30)
-	{
-		r = 1.0f;
-		g = 0.0f;
-		b = 0.0f;
-	}
-
-	result = _textFps->UpdateSentence(fpsString, r, g, b, _d3d->GetDeviceContext());
-	if (!result)
-		return false;
-
-	char cpuString[32];
-	
-	_itoa_s(cpu, tempString, 10);
-	strcpy_s(cpuString, "Cpu: ");
-	strcat_s(cpuString, tempString);
-	strcat_s(cpuString, "%");
-
-	result = _textCpu->UpdateSentence(cpuString, r, g, b, _d3d->GetDeviceContext());
+	result = _text2->UpdateWords(mouseString, _d3d->GetDeviceContext());
 	if (!result)
 		return false;
 
@@ -236,14 +185,6 @@ bool Graphics::Render()
 		return false;
 
 	result = _text2->Render(_d3d->GetDeviceContext(), worldMatrix, orthoMatrix);
-	if (!result)
-		return false;
-
-	result = _textFps->Render(_d3d->GetDeviceContext(), worldMatrix, orthoMatrix);
-	if (!result)
-		return false;
-
-	result = _textCpu->Render(_d3d->GetDeviceContext(), worldMatrix, orthoMatrix);
 	if (!result)
 		return false;
 

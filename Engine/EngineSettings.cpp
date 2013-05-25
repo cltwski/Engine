@@ -6,6 +6,8 @@ EngineSettings::EngineSettings()
 	_vsync = true;
 	_windowX = 640;
 	_windowY = 480;
+	_currentWindowX = 640;
+	_currentWindowY = 480;
 }
 
 EngineSettings& EngineSettings::GetInstance()
@@ -53,4 +55,24 @@ int EngineSettings::GetWindowX()
 int EngineSettings::GetWindowY()
 {
 	return _windowY;
+}
+
+int EngineSettings::GetCurrentWindowX()
+{
+	return _currentWindowX;
+}
+
+int EngineSettings::GetCurrentWindowY()
+{
+	return _currentWindowY;
+}
+
+void EngineSettings::SetCurrentWindowX(int currentWindowX)
+{
+	_currentWindowX = currentWindowX;
+}
+
+void EngineSettings::SetCurrentWindowY(int currentWindowY)
+{
+	_currentWindowY = currentWindowY;
 }

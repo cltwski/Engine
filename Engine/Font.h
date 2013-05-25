@@ -7,6 +7,8 @@
 
 #include "TextureManager.h"
 
+class TextureManager;
+
 class Font
 {
 protected:

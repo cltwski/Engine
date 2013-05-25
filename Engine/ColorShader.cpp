@@ -18,7 +18,7 @@ ColorShader::~ColorShader(void)
 
 bool ColorShader::InitShader(ID3D11Device* device, HWND hwnd)
 {
-	Shader::InitShader(device, hwnd);
+	return Shader::InitShader(device, hwnd);
 }
 
 void ColorShader::ShutdownShader()
@@ -28,7 +28,7 @@ void ColorShader::ShutdownShader()
 
 bool ColorShader::SetShaderParameters(ShaderParams params)
 {
-	Shader::SetShaderParameters(params);
+	return Shader::SetShaderParameters(params);
 }
 
 void ColorShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)

@@ -20,22 +20,26 @@ void ShaderManager::Shutdown()
 {
 	for (auto it = _shaders.begin(); it != _shaders.end(); ++it)
 	{
-		it->second.Shutdown();
+		it->second->Shutdown();
 	}
 	_shaders.clear();
 }
 
-bool ShaderManager::AddShader(Shader shader, HWND hwnd, const char* name)
+bool ShaderManager::AddShader(Shader* shader, HWND hwnd, const char* name)
 {
 	bool result;
 
-	result = shader.Init(_device, hwnd);
-	_shaders.insert(std::make_pair<const char*, Shader>(name, shader));
+	_shaders.insert(std::make_pair<const char*, Shader*>(name, shader));
+	result = _shaders[name]->Init(_device, hwnd);
+	if (!result)
+		return false;
+
+	return true;
 }
 
 Shader* ShaderManager::GetShader(const char* name)
 {
-	return &_shaders[name];
+	return _shaders[name];
 }
 
 void ShaderManager::RemoveShader(const char* name)

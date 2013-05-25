@@ -27,14 +27,13 @@ void TextureManager::Shutdown()
 
 bool TextureManager::AddTexture(WCHAR* filename, const char* name)
 {
-	Texture texture;
 	bool result;
 
-	result = texture.Init(_device, filename);
+	_textures.insert(std::make_pair<const char*,Texture>(name, Texture()));
+	result = _textures[name].Init(_device, filename);
 	if (!result)
 		return false;
 
-	_textures.insert(std::make_pair<const char*,Texture>(name, texture));
 	return true;
 }
 

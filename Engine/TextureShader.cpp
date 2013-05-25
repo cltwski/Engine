@@ -159,10 +159,16 @@ void TextureShader::ShutdownShader()
 
 bool TextureShader::SetShaderParameters(ShaderParams params)
 {
-	Shader::SetShaderParameters(params);
+	bool result;
+
+	result = Shader::SetShaderParameters(params);
+	if (!result)
+		return false;
 
 	//Set the shader texture resource in the pixel shader
 	params.deviceContext->PSSetShaderResources(0, 1, &params.texture);
+
+	return true;
 }
 
 void TextureShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
