@@ -13,14 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ini Files">
-      <UniqueIdentifier>{bf6594f8-7362-4236-90dd-522d5096d8ed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Outputs">
       <UniqueIdentifier>{44574f24-9f36-4a74-8d34-019ab75d2da5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Data">
-      <UniqueIdentifier>{fae30fcc-46e4-4158-82f5-40d97a90b321}</UniqueIdentifier>
     </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{ec17083f-cad5-4534-af9c-4c95d57be768}</UniqueIdentifier>
@@ -103,21 +97,30 @@
     <Filter Include="Graphics\System\Header Files">
       <UniqueIdentifier>{50a72f0f-ce24-4a57-bd63-28b4dba7947f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Settings">
+      <UniqueIdentifier>{c3c03450-c59b-4e4b-a08b-0c85ca95d5f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings\Header Files">
+      <UniqueIdentifier>{b12802cd-2dfc-4201-abff-35cd1c39d03f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings\Source Files">
+      <UniqueIdentifier>{5e95e8aa-3823-45d0-95dc-9f1e9237d661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings\ini Files">
+      <UniqueIdentifier>{bf6594f8-7362-4236-90dd-522d5096d8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Objects">
+      <UniqueIdentifier>{a4bb3cfa-4afe-4644-b084-ed53f9aaaa60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Objects\Header Files">
+      <UniqueIdentifier>{66114e26-5144-43bf-b13a-8cfa758c37f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Objects\Source Files">
+      <UniqueIdentifier>{d64b0fc1-967a-48cb-83c1-692ab97b1979}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EngineSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
@@ -183,20 +186,23 @@
     <ClCompile Include="OldText.cpp">
       <Filter>Old</Filter>
     </ClCompile>
+    <ClCompile Include="D3D.cpp">
+      <Filter>Graphics\System\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Graphics\System\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineSettings.cpp">
+      <Filter>Settings\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Graphics\System\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EngineSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -263,10 +269,28 @@
     <ClInclude Include="OldText.h">
       <Filter>Old</Filter>
     </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>Graphics\System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D.h">
+      <Filter>Graphics\System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>Graphics\System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineSettings.h">
+      <Filter>Settings\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Graphics\System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.ini">
-      <Filter>ini Files</Filter>
+      <Filter>Settings\ini Files</Filter>
     </None>
     <None Include="shader-error.txt">
       <Filter>Outputs</Filter>

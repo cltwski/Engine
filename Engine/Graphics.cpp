@@ -44,32 +44,13 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 	_camera->Render();
 	_camera->GetViewMatrix(baseViewMatrix);
 
-	//Init Font texture
-	TextureManager::GetInstance().Init(_d3d->GetDevice());
-	result = TextureManager::GetInstance().AddTexture(L"Data/Fonts/font.dds", "StandardFont");
-	if (!result)
-	{
-		MessageBox(hWnd, L"Could not add texture", L"Error", MB_OK);
-		return false;
-	}
+	//Init all graphics resources.
+	GraphicsResourceManager::GetInstance().Init(_d3d->GetDevice());
 
-	//Init the font shader
-	ShaderManager::GetInstance().Init(_d3d->GetDevice());
-	result = ShaderManager::GetInstance().AddShader(new FontShader(), hWnd, "Font");
+	//Load all assets
+	result = LoadAssets(hWnd);
 	if (!result)
-	{
-		MessageBox(hWnd, L"Could not add shader", L"Error", MB_OK);
 		return false;
-	}
-
-	//Init the font
-	FontManager::GetInstance().Init(_d3d->GetDevice());
-	result = FontManager::GetInstance().AddFont("Data/Fonts/fontdata.txt", "StandardFont", "Standard");
-	if (!result)
-	{
-		MessageBox(hWnd, L"Could not add font", L"Error", MB_OK);
-		return false;
-	}
 
 	//Init the text
 	_text1 = new Text();
@@ -97,6 +78,29 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 
 	return true;
 }
+
+bool Graphics::LoadAssets(HWND hwnd)
+{
+	bool result;
+
+	//Load textures first
+	result = TextureManager::GetInstance().AddTexture(L"Data/Fonts/font.dds", "StandardFont");
+	if (!result)
+		return false;
+
+	//Load shaders
+	result = ShaderManager::GetInstance().AddShader(new FontShader(), hwnd, "Font");
+	if (!result)
+		return false;
+
+	//Load fonts
+	result = FontManager::GetInstance().AddFont("Data/Fonts/fontdata.txt", "StandardFont", "Standard");
+	if (!result)
+		return false;
+
+	return true;
+}
+
 
 void Graphics::Shutdown()
 {
@@ -180,11 +184,13 @@ bool Graphics::Render()
 	_d3d->EnableAlphaBlending();
 
 	//Render the text strings
-	result = _text1->Render(_d3d->GetDeviceContext(), worldMatrix, orthoMatrix);
+	_text1->SetMatrices(worldMatrix, orthoMatrix);
+	result = _text1->Render(_d3d->GetDeviceContext());
 	if (!result)
 		return false;
 
-	result = _text2->Render(_d3d->GetDeviceContext(), worldMatrix, orthoMatrix);
+	_text2->SetMatrices(worldMatrix, orthoMatrix);
+	result = _text2->Render(_d3d->GetDeviceContext());
 	if (!result)
 		return false;
 

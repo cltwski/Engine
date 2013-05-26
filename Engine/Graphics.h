@@ -10,7 +10,7 @@
 #include "FontManager.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
-#include "FontShader.h"
+#include "GraphicsResourceManager.h"
 
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -36,6 +36,8 @@ private:
 	Bitmap* _bitmap;
 	Text* _text1;
 	Text* _text2;
+
+	bool LoadAssets(HWND);
 };
 
 #endif

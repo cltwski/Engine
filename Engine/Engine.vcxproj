@@ -82,6 +82,7 @@
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="Object2D.cpp" />
     <ClCompile Include="OldFontShader.cpp" />
     <ClCompile Include="OldTextureShader.cpp" />
     <ClCompile Include="GraphicsResourceManager.cpp" />
@@ -110,6 +111,8 @@
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="FontShader.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="Object2D.h" />
     <ClInclude Include="OldFontShader.h" />
     <ClInclude Include="OldTextureShader.h" />
     <ClInclude Include="GraphicsResourceManager.h" />

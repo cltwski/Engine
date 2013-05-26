@@ -3,11 +3,12 @@
 #include <D3DX11.h>
 #include <D3DX10math.h>
 
+#include "IRenderable.h"
 #include "FontManager.h"
 #include "ShaderManager.h"
 #include "EngineSettings.h"
 
-class Text
+class Text : public IRenderable
 {
 protected:
 	struct SentenceT
@@ -30,7 +31,8 @@ public:
 	~Text();
 
 	bool Init(ID3D11Device*, ID3D11DeviceContext*, HWND, char*, char*, D3DXMATRIX, char*, int, int, float, float, float);
-	bool Render(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX);
+	void SetMatrices(D3DXMATRIX, D3DXMATRIX);
+	bool Render(ID3D11DeviceContext*);
 	void Shutdown();
 
 	bool UpdateWords(char*, ID3D11DeviceContext*);
@@ -53,6 +55,8 @@ protected:
 	SentenceT* _sentence;
 	char* _words;
 	GUID _guid;
+	D3DXMATRIX _worldMatrix;
+	D3DXMATRIX _orthoMatrix;
 
 	bool InitSentence(SentenceT**, int, ID3D11Device*);
 };

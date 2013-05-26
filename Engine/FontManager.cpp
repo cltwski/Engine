@@ -33,15 +33,6 @@ bool FontManager::AddFont(char* fontFilename, char* textureName, const char* nam
 	result = _fonts[name].Init(_device, fontFilename, textureName);
 	if (!result)
 		return false;
-	/*Font* font = new Font();
-	bool result;
-
-	result = font->Init(_device, fontFilename, textureName);
-	if (!result)
-		return false;
-
-	_fonts.insert(std::make_pair<const char*, Font>(name, *font));
-	_fonts[name] = font;*/
 
 	return true;
 }

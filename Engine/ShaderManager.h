@@ -5,6 +5,8 @@
 
 #include "Shader.h"
 #include "FontShader.h"
+#include "ColorShader.h"
+#include "TextureShader.h"
 
 class ShaderManager
 {
