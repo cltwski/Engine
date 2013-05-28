@@ -2,7 +2,12 @@
 
 
 Object2D::Object2D(void)
-{}
+{
+	_shader = NULL;
+	_texture = NULL;
+	_vertexBuffer = NULL;
+	_indexBuffer = NULL;
+}
 
 Object2D::Object2D(const Object2D& other)
 {}
@@ -10,7 +15,7 @@ Object2D::Object2D(const Object2D& other)
 Object2D::~Object2D(void)
 {}
 
-bool Object2D::Init(ID3D11Device* device, char* textureName, int width, int height)
+bool Object2D::Init(ID3D11Device* device, char* textureName, char* shaderName, int width, int height)
 {
 	bool result;
 	HRESULT result2;
@@ -41,13 +46,16 @@ bool Object2D::Init(ID3D11Device* device, char* textureName, int width, int heig
 	if (!_texture)
 		return false;
 
+	//Acquire the shader
+	_shader = ShaderManager::GetInstance().GetShader(shaderName);
+
 	return true;
 }
 
 bool Object2D::SetPosition(ID3D11DeviceContext* deviceContext, int newPosX, int newPosY)
 {
 	if ((newPosX == _posX) && (newPosY == _posY))
-		return;
+		return true;
 	
 	bool result;
 
@@ -59,8 +67,10 @@ bool Object2D::SetPosition(ID3D11DeviceContext* deviceContext, int newPosX, int 
 	return true;
 }
 
-bool Object2D::Render(ID3D11DeviceContext* deviceContext)
+bool Object2D::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
 {
+	bool result;
+
 	//Check that the position has been set
 	if ((_posX == -1) || (_posY == -1))
 		return false;
@@ -80,6 +90,17 @@ bool Object2D::Render(ID3D11DeviceContext* deviceContext)
 	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	//Render the textured 2d object with the texture shader
+	ShaderParams params;
+	params.deviceContext = deviceContext;
+	params.texture = _texture->GetTexture();
+	params.worldMatrix = worldMatrix;
+	params.viewMatrix = viewMatrix;
+	params.projectionMatrix = projectionMatrix;
+	result = _shader->Render(params, _indexCount);
+	if (!result)
+		return false;
+
 	return true;
 }
 
@@ -98,6 +119,16 @@ void Object2D::Shutdown()
 		_indexBuffer->Release();
 		_indexBuffer = NULL;
 	}
+}
+
+ID3D11ShaderResourceView* Object2D::GetTexture()
+{
+	return _texture->GetTexture();
+}
+
+int Object2D::GetIndexCount()
+{
+	return _indexCount;
 }
 
 bool Object2D::InitBuffers(ID3D11Device* device)
@@ -183,8 +214,8 @@ bool Object2D::UpdateBuffers(ID3D11DeviceContext* deviceContext, int newPosX, in
 	HRESULT result;
 
 	//Update the positions
-	_previousPosX = _posX;
-	_previousPoxY = _posY;
+	_prevPosX = _posX;
+	_prevPosY = _posY;
 	_posX = newPosX;
 	_posY = newPosY;
 

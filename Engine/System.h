@@ -5,7 +5,8 @@
 
 #include <Windows.h>
 
-#include "Input.h"
+#include "Keyboard.h"
+#include "Mouse.h"
 #include "Graphics.h"
 #include "EngineSettings.h"
 #include "FPS.h"
@@ -30,7 +31,8 @@ private:
 	HINSTANCE _hInstance;
 	HWND _hWnd;
 
-	Input* _input;
+	Keyboard* _keyboard;
+	Mouse* _mouse;
 	Graphics* _graphics;
 	FPS* _fps;
 	CPU* _cpu;

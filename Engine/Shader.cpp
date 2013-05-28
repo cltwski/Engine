@@ -227,6 +227,8 @@ bool Shader::Render(ShaderParams params, int indexCount)
 		return false;
 
 	RenderShader(params.deviceContext, indexCount);
+
+	return true;
 }
 
 bool Shader::SetShaderParameters(ShaderParams params)

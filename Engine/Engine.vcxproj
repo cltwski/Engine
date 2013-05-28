@@ -74,7 +74,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="OldBitmap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorShader.cpp" />
     <ClCompile Include="CPU.cpp" />
@@ -83,16 +87,24 @@
     <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Object2D.cpp" />
-    <ClCompile Include="OldFontShader.cpp" />
-    <ClCompile Include="OldTextureShader.cpp" />
+    <ClCompile Include="OldFontShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="OldTextureShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GraphicsResourceManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="OldText.cpp" />
+    <ClCompile Include="OldText.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="EngineSettings.cpp" />
     <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="OldInput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="System.cpp" />
@@ -103,7 +115,11 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="OldBitmap.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColorShader.h" />
     <ClInclude Include="CPU.h" />
@@ -113,17 +129,25 @@
     <ClInclude Include="FPS.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="Object2D.h" />
-    <ClInclude Include="OldFontShader.h" />
-    <ClInclude Include="OldTextureShader.h" />
+    <ClInclude Include="OldFontShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="OldTextureShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="GraphicsResourceManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="ShaderParams.h" />
-    <ClInclude Include="OldText.h" />
+    <ClInclude Include="OldText.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="D3D.h" />
     <ClInclude Include="EngineSettings.h" />
     <ClInclude Include="Graphics.h" />
-    <ClInclude Include="Input.h" />
+    <ClInclude Include="OldInput.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Model.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Text.h" />
@@ -141,6 +165,7 @@
     <None Include="Data\Shaders\Vertex Shaders\ColorVS.hlsl" />
     <None Include="Data\Shaders\Vertex Shaders\FontVS.hlsl" />
     <None Include="Data\Shaders\Vertex Shaders\TextureVS.hlsl" />
+    <None Include="Data\Textures\Water.dds" />
     <None Include="Settings.ini" />
     <None Include="shader-error.txt" />
     <None Include="Textures\Grass.dds" />

@@ -8,6 +8,7 @@
 #include <D3DX10math.h>
 
 #include "TextureManager.h"
+#include "ShaderManager.h"
 
 class Object2D : public IRenderable
 {
@@ -23,10 +24,13 @@ public:
 	Object2D(const Object2D&);
 	~Object2D(void);
 
-	bool Init(ID3D11Device*, char*, int, int);
+	bool Init(ID3D11Device*, char*, char*, int, int);
 	bool SetPosition(ID3D11DeviceContext*, int, int);
-	bool Render(ID3D11DeviceContext*);
+	bool Render(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
 	void Shutdown();
+
+	ID3D11ShaderResourceView* GetTexture();
+	int GetIndexCount();
 
 protected:
 	ID3D11Buffer* _vertexBuffer;
@@ -34,6 +38,7 @@ protected:
 	int _vertexCount;
 	int _indexCount;
 	Texture* _texture;
+	Shader* _shader;
 	GUID _guid;
 
 	int _width, _height;

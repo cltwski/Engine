@@ -5,7 +5,8 @@
 #include "D3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "Bitmap.h"
+#include "IRenderable.h"
+#include "Object2D.h"
 #include "Text.h"
 #include "FontManager.h"
 #include "ShaderManager.h"
@@ -33,9 +34,10 @@ private:
 	D3D* _d3d;
 	Camera* _camera;
 	Model* _model;
-	Bitmap* _bitmap;
+	std::vector<Object2D*> _objects2d;
 	Text* _text1;
 	Text* _text2;
+	TextureShader* _ts;
 
 	bool LoadAssets(HWND);
 };

@@ -31,8 +31,7 @@ public:
 	~Text();
 
 	bool Init(ID3D11Device*, ID3D11DeviceContext*, HWND, char*, char*, D3DXMATRIX, char*, int, int, float, float, float);
-	void SetMatrices(D3DXMATRIX, D3DXMATRIX);
-	bool Render(ID3D11DeviceContext*);
+	bool Render(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
 	void Shutdown();
 
 	bool UpdateWords(char*, ID3D11DeviceContext*);
@@ -49,14 +48,12 @@ protected:
 	Font* _font;
 	Shader* _shader;
 	float _drawX, _drawY;
-	float _posX, _posY;
+	int _posX, _posY;
 	float _r, _g, _b;
 	D3DXMATRIX _baseViewMatrix;
 	SentenceT* _sentence;
 	char* _words;
 	GUID _guid;
-	D3DXMATRIX _worldMatrix;
-	D3DXMATRIX _orthoMatrix;
 
 	bool InitSentence(SentenceT**, int, ID3D11Device*);
 };

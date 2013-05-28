@@ -118,21 +118,24 @@
     <Filter Include="Graphics\Objects\Source Files">
       <UniqueIdentifier>{d64b0fc1-967a-48cb-83c1-692ab97b1979}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{654d7448-9639-4389-8190-39f52246288b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input\Header Files">
+      <UniqueIdentifier>{7b648b5c-58fb-48ab-9c20-9bdf774f5640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input\Source Files">
+      <UniqueIdentifier>{837e68df-7846-478a-a6af-664bd7000bea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="System.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ColorShader.cpp">
@@ -199,20 +202,26 @@
       <Filter>Graphics\System\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Object2D.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Graphics\Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OldBitmap.cpp">
+      <Filter>Old</Filter>
+    </ClCompile>
+    <ClCompile Include="OldInput.cpp">
+      <Filter>Old</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Input\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Input\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="System.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ColorShader.h">
@@ -285,7 +294,19 @@
       <Filter>Graphics\System\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object2D.h">
-      <Filter>Header Files</Filter>
+      <Filter>Graphics\Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OldBitmap.h">
+      <Filter>Old</Filter>
+    </ClInclude>
+    <ClInclude Include="OldInput.h">
+      <Filter>Old</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Input\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Input\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -324,6 +345,9 @@
     </None>
     <None Include="Data\Fonts\font.dds">
       <Filter>Graphics\Fonts\Fonts\Standard</Filter>
+    </None>
+    <None Include="Data\Textures\Water.dds">
+      <Filter>Graphics\Textures\Textures</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -53,13 +53,7 @@ bool Text::Init(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND h
 	return true;
 }
 
-void Text::SetMatrices(D3DXMATRIX worldMatrix, D3DXMATRIX orthoMatrix)
-{
-	_worldMatrix = worldMatrix;
-	_orthoMatrix = orthoMatrix;
-}
-
-bool Text::Render(ID3D11DeviceContext* deviceContext)
+bool Text::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
 {
 	unsigned int stride, offset;
 	D3DXVECTOR4 pixelColor;
@@ -85,15 +79,13 @@ bool Text::Render(ID3D11DeviceContext* deviceContext)
 	ShaderParams params;
 	params.deviceContext = deviceContext;
 	params.pixelColor = pixelColor;
-	params.worldMatrix = _worldMatrix;
+	params.worldMatrix = worldMatrix;
 	params.viewMatrix = _baseViewMatrix;
-	params.projectionMatrix = _orthoMatrix;
+	params.projectionMatrix = projectionMatrix;
 	params.texture = _font->GetTexture();
 	result = _shader->Render(params, _sentence->indexCount);
 	if(!result)
-	{
-		false;
-	}
+		return false;
 
 	return true;
 }

@@ -5,8 +5,6 @@ TextureShader::TextureShader(void)
 {
 	Shader::Shader();
 	_samplerState = NULL;
-	_vsFilename = L"Data/Shaders/Vertex Shaders/TextureVS.hlsl";
-	_psFilename = L"Data/Shaders/Pixel Shaders/TexturePS.hlsl";
 }
 
 TextureShader::TextureShader(const TextureShader& other)
@@ -16,6 +14,22 @@ TextureShader::TextureShader(const TextureShader& other)
 
 TextureShader::~TextureShader(void)
 {}
+
+bool TextureShader::Init(ID3D11Device* device, HWND hwnd)
+{
+	bool result;
+
+	//Set the filenames
+	_vsFilename = L"Data/Shaders/Vertex Shaders/TextureVS.hlsl";
+	_psFilename = L"Data/Shaders/Pixel Shaders/TexturePS.hlsl";
+
+	//Init the shaders
+	result = InitShader(device, hwnd);
+	if (!result)
+		return false;
+
+	return true;
+}
 
 bool TextureShader::InitShader(ID3D11Device* device, HWND hwnd)
 {

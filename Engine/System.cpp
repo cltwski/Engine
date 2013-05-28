@@ -2,7 +2,8 @@
 
 System::System()
 {
-	_input = NULL;
+	_keyboard = NULL;
+	_mouse = NULL;
 	_graphics = NULL;
 	_fps = NULL;
 	_cpu = NULL;
@@ -27,18 +28,13 @@ bool System::Init()
 	//Init the windows api
 	InitWindows(screenWidth, screenHeight);
 
-	//Create input object
-	_input = new Input();
-	if (!_input)
-		return false;
+	//Create the keyboard and init
+	_keyboard = new Keyboard();
+	_keyboard->Init();
 
-	//Init input object
-	result = _input->Init(_hInstance, _hWnd, screenWidth, screenHeight);
-	if (!result)
-	{
-		MessageBox(_hWnd, L"Could not init the input object", L"Error", MB_OK);
-		return false;
-	}
+	//Create the mouse and init
+	_mouse = new Mouse();
+	_mouse->Init();
 
 	//Create graphics object
 	_graphics = new Graphics();
@@ -108,12 +104,17 @@ void System::Shutdown()
 		_graphics = NULL;
 	}
 
-	//Release the input object
-	if (_input)
+	//Release the input objects
+	if (_keyboard)
 	{
-		_input->Shutdown();
-		delete _input;
-		_input = NULL;
+		delete _keyboard;
+		_keyboard = NULL;
+	}
+
+	if (_mouse)
+	{
+		delete _mouse;
+		_mouse = NULL;
 	}
 
 	//Shutdown the window
@@ -156,7 +157,7 @@ void System::Run()
 		}
 
 		//Check to see if the user pressed escape and wants to quit
-		if (_input->IsEscapePressed())
+		if (_keyboard->IsKeyDown(VK_ESCAPE))
 			done = true;
 	}
 }
@@ -171,13 +172,9 @@ bool System::Frame()
 	_fps->Frame();
 	_cpu->Frame();
 
-	//Do the input frame processing
-	result = _input->Frame();
-	if (!result)
-		return false;
-
-	//Get the location of the mouse from the input object
-	_input->GetMouseLocation(mouseX, mouseY);
+	//Update from inputs
+	mouseX = _mouse->GetX();
+	mouseY = _mouse->GetY();
 
 	//Do game processing here
 
@@ -195,7 +192,107 @@ bool System::Frame()
 
 LRESULT CALLBACK System::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-	return DefWindowProc(hWnd, umsg, wParam, lParam);
+	switch (umsg)
+	{
+		//Handle keyboard cases
+	case WM_KEYDOWN:
+		{
+			_keyboard->KeyDown((int)wParam);
+
+			return 0;
+		}
+	case WM_KEYUP:
+		{
+			_keyboard->KeyUp((int)wParam);
+
+			return 0;
+		}
+		//Handle mouse cases
+	case WM_MOUSEMOVE:
+		{
+			//Update position
+			_mouse->SetX((int)LOWORD(lParam));
+			_mouse->SetY((int)HIWORD(lParam));
+
+			//get buttons state
+			int buttons = (int)wParam;
+
+			//Check buttons state
+			if (buttons & MK_LBUTTON)
+				_mouse->SetLButton(true);
+			else
+				_mouse->SetLButton(false);
+
+			if (buttons & MK_MBUTTON)
+				_mouse->SetMButton(true);
+			else
+				_mouse->SetMButton(false);
+
+			if (buttons & MK_RBUTTON)
+				_mouse->SetRButton(true);
+			else
+				_mouse->SetRButton(false);
+
+			if (buttons & MK_CONTROL)
+				_keyboard->KeyDown(VK_CONTROL);
+			else
+				_keyboard->KeyUp(VK_CONTROL);
+
+			if (buttons & MK_SHIFT)
+				_keyboard->KeyDown(VK_SHIFT);
+			else
+				_keyboard->KeyUp(VK_SHIFT);
+
+			return 0;
+		}
+		//Handle mouse clicks
+	case WM_MBUTTONDOWN:
+		{
+			//Update position
+			_mouse->SetX((int)LOWORD(lParam));
+			_mouse->SetY((int)HIWORD(lParam));
+
+			_mouse->SetMButton(true);
+
+			return 0;
+		}
+	case WM_MBUTTONUP:
+		{
+			//Update position
+			_mouse->SetX((int)LOWORD(lParam));
+			_mouse->SetY((int)HIWORD(lParam));
+
+			_mouse->SetMButton(false);
+
+			return 0;
+		}
+
+	case WM_RBUTTONDOWN:
+		{
+			//Update position
+			_mouse->SetX((int)LOWORD(lParam));
+			_mouse->SetY((int)HIWORD(lParam));
+
+			_mouse->SetRButton(true);
+
+			return 0;
+		}
+	case WM_RBUTTONUP:
+		{
+			//Update position
+			_mouse->SetX((int)LOWORD(lParam));
+			_mouse->SetY((int)HIWORD(lParam));
+
+			_mouse->SetRButton(false);
+
+			return 0;
+		}
+
+	default:
+		{
+			return DefWindowProc(hWnd, umsg, wParam, lParam);
+		}
+	}
 }
 
 
@@ -265,7 +362,7 @@ void System::InitWindows(int& screenWidth, int& screenHeight)
 	}
 
 	//Create the window with the screen settings and get the handle to it
-	_hWnd = CreateWindowEx(WS_EX_APPWINDOW, _applicationName, _applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, _hInstance, NULL);
+	_hWnd = CreateWindowEx(WS_EX_APPWINDOW, _applicationName, _applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW, posX, posY, screenWidth, screenHeight, NULL, NULL, _hInstance, NULL);
 
 	//Bring the window up on the screen and set it as the main focus
 	ShowWindow(_hWnd, SW_SHOW);
@@ -313,14 +410,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 
-		//Check if the window is being cloased
+		//Check if the window is being closed
 	case WM_CLOSE:
 		{
 			PostQuitMessage(0);
 			return 0;
 		}
 
-		//All other messages pass to the message handler in the sustem class
+		//All other messages pass to the message handler in the system class
 	default:
 		{
 			return ApplicationHandle->MessageHandler(hWnd, umsg, wParam, lParam);

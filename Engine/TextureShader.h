@@ -9,6 +9,8 @@ public:
 	TextureShader(const TextureShader&);
 	~TextureShader(void);
 
+	bool Init(ID3D11Device*, HWND);
+
 private:
 	ID3D11SamplerState* _samplerState;
 

@@ -5,9 +5,9 @@ Graphics::Graphics()
 	_d3d = NULL;
 	_camera = NULL;
 	_model = NULL;
-	_bitmap = NULL;
 	_text1 = NULL;
 	_text2 = NULL;
+	_ts = NULL;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -76,6 +76,25 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 		return false;
 	}
 
+	for (int i=0; i < 2; ++i)
+	{
+		_objects2d.push_back(new Object2D());
+		result = _objects2d[i]->Init(_d3d->GetDevice(), "Grass", "Texture", 64, 64);
+		if (!result) 
+			return false;
+	}
+
+	for (int i=0; i < 2; ++i)
+	{
+		_objects2d.push_back(new Object2D());
+		result = _objects2d[i+2]->Init(_d3d->GetDevice(), "Water", "Texture", 64, 64);
+		if (!result) 
+			return false;
+	}
+
+	//Init ts
+	_ts = (TextureShader*)ShaderManager::GetInstance().GetShader("Texture");
+
 	return true;
 }
 
@@ -87,11 +106,24 @@ bool Graphics::LoadAssets(HWND hwnd)
 	result = TextureManager::GetInstance().AddTexture(L"Data/Fonts/font.dds", "StandardFont");
 	if (!result)
 		return false;
+	result = TextureManager::GetInstance().AddTexture(L"Data/Textures/Grass.dds", "Grass");
+	if (!result)
+		return false;
+	result = TextureManager::GetInstance().AddTexture(L"Data/Textures/Water.dds", "Water");
+	if (!result)
+		return false;
+	result = TextureManager::GetInstance().AddTexture(L"Data/Textures/SplashScreen.dds", "SplashScreen");
+	if (!result)
+		return false;
 
 	//Load shaders
+	result = ShaderManager::GetInstance().AddShader(new TextureShader(), hwnd, "Texture");
+	if (!result)
+		return false;
 	result = ShaderManager::GetInstance().AddShader(new FontShader(), hwnd, "Font");
 	if (!result)
 		return false;
+	
 
 	//Load fonts
 	result = FontManager::GetInstance().AddFont("Data/Fonts/fontdata.txt", "StandardFont", "Standard");
@@ -104,6 +136,19 @@ bool Graphics::LoadAssets(HWND hwnd)
 
 void Graphics::Shutdown()
 {
+	for (int i=0; i < _objects2d.size(); ++i)
+	{
+		_objects2d[i]->Shutdown();
+		delete _objects2d[i];
+		_objects2d[i] = NULL;
+	}
+	_objects2d.clear();
+
+	if (_ts)
+	{
+		_ts = NULL;
+	}
+
 	if (_text1)
 	{
 		_text2->Shutdown();
@@ -156,6 +201,11 @@ bool Graphics::Frame(int mouseX, int mouseY, int fps, int cpu, float timer)
 	//Set the position of the camera
 	_camera->SetPosition(0.0f, 0.0f, -10.0f);
 
+	_objects2d[0]->SetPosition(_d3d->GetDeviceContext(), 100+mouseX, 100+mouseY);
+	_objects2d[1]->SetPosition(_d3d->GetDeviceContext(), 164+mouseX, 164+mouseY);
+	_objects2d[2]->SetPosition(_d3d->GetDeviceContext(), 100+mouseX, 164+mouseY);
+	_objects2d[3]->SetPosition(_d3d->GetDeviceContext(), 164+mouseX, 100+mouseY);
+
 	return true;
 }
 
@@ -174,7 +224,6 @@ bool Graphics::Render()
 	_camera->GetViewMatrix(viewMatrix);
 	_d3d->GetWorldMatrix(worldMatrix);
 	_d3d->GetProjectionMatrix(projectionMatrix);
-
 	_d3d->GetOrthoMatrix(orthoMatrix);
 
 	//Turn off the Z buffer to begin all 2D rendering
@@ -184,15 +233,19 @@ bool Graphics::Render()
 	_d3d->EnableAlphaBlending();
 
 	//Render the text strings
-	_text1->SetMatrices(worldMatrix, orthoMatrix);
-	result = _text1->Render(_d3d->GetDeviceContext());
+	result = _text1->Render(_d3d->GetDeviceContext(), worldMatrix, viewMatrix, orthoMatrix);
 	if (!result)
 		return false;
 
-	_text2->SetMatrices(worldMatrix, orthoMatrix);
-	result = _text2->Render(_d3d->GetDeviceContext());
+	result = _text2->Render(_d3d->GetDeviceContext(), worldMatrix, viewMatrix, orthoMatrix);
 	if (!result)
 		return false;
+
+	//Render non alpha blending 2d
+	for (int i=0; i < _objects2d.size(); ++i)
+	{
+		_objects2d[i]->Render(_d3d->GetDeviceContext(), worldMatrix, viewMatrix, orthoMatrix);
+	}
 
 	//Turn off alpha blending after rendering the text
 	_d3d->DisableAlphaBlending();
