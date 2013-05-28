@@ -28,16 +28,18 @@ public:
 	bool Init(int,int,HWND);
 	void Shutdown();
 	bool Frame(int, int, int, int, float);
+	bool FrameSplash();
 	bool Render();
+	bool RenderSplash();
 
 private:
 	D3D* _d3d;
 	Camera* _camera;
 	Model* _model;
+	Object2D* _splash;
 	std::vector<Object2D*> _objects2d;
 	Text* _text1;
 	Text* _text2;
-	TextureShader* _ts;
 
 	bool LoadAssets(HWND);
 };

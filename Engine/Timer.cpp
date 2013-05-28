@@ -19,26 +19,28 @@ bool Timer::Init()
 	//Find out how many time the frequency counter ticks every ms
 	_ticksPerMs = (float) (_frequency / 1000);
 
-	QueryPerformanceCounter((LARGE_INTEGER*)&_startTime);
+	_running = false;
 
 	return true;
 }
 
-void Timer::Frame()
+void Timer::StartTime()
 {
-	INT64 currentTime;
-	float timeDif;
+	QueryPerformanceCounter((LARGE_INTEGER*)&_startTime);
 
-	QueryPerformanceCounter((LARGE_INTEGER*)&currentTime);
-
-	timeDif = (float)(currentTime - _startTime);
-
-	_frameTime = timeDif / _ticksPerMs;
-
-	_startTime = currentTime;
+	_running = true;
 }
 
 float Timer::GetTime()
 {
-	return _frameTime;
+	QueryPerformanceCounter((LARGE_INTEGER*)&_time);
+
+	float timeDif = (float)(_time - _startTime);
+
+	return (timeDif/_ticksPerMs);
+}
+
+bool Timer::IsCounting()
+{
+	return _running;
 }

@@ -1,5 +1,4 @@
-#ifndef TIMER_H
-#define TIMER_H
+#pragma once
 
 #include <Windows.h>
 
@@ -11,14 +10,14 @@ public:
 	~Timer();
 
 	bool Init();
-	void Frame();
-
+	void StartTime();
 	float GetTime();
+	bool IsCounting();
+
 private:
 	INT64 _frequency;
 	float _ticksPerMs;
 	INT64 _startTime;
-	float _frameTime;
+	float _time;
+	bool _running;
 };
-
-#endif

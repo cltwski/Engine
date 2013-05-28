@@ -11,6 +11,8 @@
 #include "EngineSettings.h"
 #include "FPS.h"
 #include "CPU.h"
+#include "FrameTimer.h"
+#include "EnumGameState.h"
 #include "Timer.h"
 
 class System
@@ -36,7 +38,9 @@ private:
 	Graphics* _graphics;
 	FPS* _fps;
 	CPU* _cpu;
+	FrameTimer* _frameTimer;
 	Timer* _timer;
+	GameState _state;
 
 	bool Frame();
 	void InitWindows(int&, int&);

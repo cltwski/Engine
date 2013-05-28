@@ -25,15 +25,6 @@
     <Filter Include="Old">
       <UniqueIdentifier>{d1a165e3-b8cd-4271-b279-bf545500e8d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils">
-      <UniqueIdentifier>{318e28c8-246f-49e4-8abc-f397e32441f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\Header Files">
-      <UniqueIdentifier>{e7eab100-244b-4d2f-9ef6-2f6976909d02}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\Source Files">
-      <UniqueIdentifier>{cac1dcd5-9381-4961-9eaf-749a5b5a20a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Graphics\Textures\Textures">
       <UniqueIdentifier>{be12d9db-adbd-480b-bef8-71d948874662}</UniqueIdentifier>
     </Filter>
@@ -127,15 +118,30 @@
     <Filter Include="Input\Source Files">
       <UniqueIdentifier>{837e68df-7846-478a-a6af-664bd7000bea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{cceff424-8959-4ffa-86d2-7beaca525862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Header Files">
+      <UniqueIdentifier>{5a767e78-0099-49a2-bb07-5e3068d03962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Source Files">
+      <UniqueIdentifier>{c85e1db1-156c-4f18-bde1-eea7e40c70d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Utils">
+      <UniqueIdentifier>{318e28c8-246f-49e4-8abc-f397e32441f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Utils\Header Files">
+      <UniqueIdentifier>{e7eab100-244b-4d2f-9ef6-2f6976909d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Utils\Source Files">
+      <UniqueIdentifier>{cac1dcd5-9381-4961-9eaf-749a5b5a20a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ColorShader.cpp">
@@ -156,14 +162,11 @@
     <ClCompile Include="OldFontShader.cpp">
       <Filter>Old</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Utils\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CPU.cpp">
-      <Filter>Utils\Source Files</Filter>
+      <Filter>System\Utils\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FPS.cpp">
-      <Filter>Utils\Source Files</Filter>
+      <Filter>System\Utils\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderManager.cpp">
       <Filter>Graphics\Shaders\Source Files</Filter>
@@ -216,12 +219,18 @@
     <ClCompile Include="Mouse.cpp">
       <Filter>Input\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>System\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTimer.cpp">
+      <Filter>System\Utils\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>System\Utils\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ColorShader.h">
@@ -245,14 +254,11 @@
     <ClInclude Include="OldFontShader.h">
       <Filter>Old</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Utils\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FPS.h">
-      <Filter>Utils\Header Files</Filter>
+      <Filter>System\Utils\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CPU.h">
-      <Filter>Utils\Header Files</Filter>
+      <Filter>System\Utils\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>Graphics\Shaders\Header Files</Filter>
@@ -308,6 +314,15 @@
     <ClInclude Include="Mouse.h">
       <Filter>Input\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>System\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameTimer.h">
+      <Filter>System\Utils\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>System\Utils\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.ini">
@@ -348,6 +363,9 @@
     </None>
     <None Include="Data\Textures\Water.dds">
       <Filter>Graphics\Textures\Textures</Filter>
+    </None>
+    <None Include="EnumGameState.h">
+      <Filter>System\Header Files</Filter>
     </None>
   </ItemGroup>
 </Project>

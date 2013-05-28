@@ -7,7 +7,7 @@ Graphics::Graphics()
 	_model = NULL;
 	_text1 = NULL;
 	_text2 = NULL;
-	_ts = NULL;
+	_splash = NULL;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -92,8 +92,8 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 			return false;
 	}
 
-	//Init ts
-	_ts = (TextureShader*)ShaderManager::GetInstance().GetShader("Texture");
+	_splash = new Object2D();
+	_splash->Init(_d3d->GetDevice(), "SplashScreen", "Texture", EngineSettings::GetInstance().GetCurrentWindowX(), EngineSettings::GetInstance().GetCurrentWindowY());
 
 	return true;
 }
@@ -144,9 +144,9 @@ void Graphics::Shutdown()
 	}
 	_objects2d.clear();
 
-	if (_ts)
+	if (_splash)
 	{
-		_ts = NULL;
+		_splash = NULL;
 	}
 
 	if (_text1)
@@ -209,6 +209,13 @@ bool Graphics::Frame(int mouseX, int mouseY, int fps, int cpu, float timer)
 	return true;
 }
 
+bool Graphics::FrameSplash()
+{
+	_splash->SetPosition(_d3d->GetDeviceContext(), 0, 0);
+
+	return true;
+}
+
 bool Graphics::Render()
 {
 	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
@@ -246,6 +253,43 @@ bool Graphics::Render()
 	{
 		_objects2d[i]->Render(_d3d->GetDeviceContext(), worldMatrix, viewMatrix, orthoMatrix);
 	}
+
+	//Turn off alpha blending after rendering the text
+	_d3d->DisableAlphaBlending();
+
+	//Re-enable Z buffer as we're done with 2d rendering
+	_d3d->EnableZBuffer();
+
+	//Present the rendered scene to the screen
+	_d3d->EndScene();
+
+	return true;
+}
+
+bool Graphics::RenderSplash()
+{
+	D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
+	bool result;
+
+	//Clear the buffer to begin the scene, rgba clear color params
+	_d3d->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+	//Generate the view matrix based on the camera's position
+	_camera->Render();
+
+	//Get the world, view and projection matrices from the camera and d3d objects
+	_camera->GetViewMatrix(viewMatrix);
+	_d3d->GetWorldMatrix(worldMatrix);
+	_d3d->GetProjectionMatrix(projectionMatrix);
+	_d3d->GetOrthoMatrix(orthoMatrix);
+
+	//Turn off the Z buffer to begin all 2D rendering
+	_d3d->DisableZBuffer();
+
+	//Turn on alpha blending before rendering the text
+	_d3d->EnableAlphaBlending();
+
+	_splash->Render(_d3d->GetDeviceContext(), worldMatrix, viewMatrix, orthoMatrix);
 
 	//Turn off alpha blending after rendering the text
 	_d3d->DisableAlphaBlending();

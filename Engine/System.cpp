@@ -7,6 +7,8 @@ System::System()
 	_graphics = NULL;
 	_fps = NULL;
 	_cpu = NULL;
+	_frameTimer = NULL;
+	_state = Splash;
 	_timer = NULL;
 }
 
@@ -58,16 +60,24 @@ bool System::Init()
 		return false;
 	_cpu->Init();
 
-	//Create and init the Timer object
-	_timer = new Timer();
-	if (!_timer)
+	//Create and init the FrameTimer object
+	_frameTimer = new FrameTimer();
+	if (!_frameTimer)
 		return false;
-	result = _timer->Init();
+	result = _frameTimer->Init();
 	if (!result)
 	{
 		MessageBox(_hWnd, L"Could not init the timer object", L"Error", MB_OK);
 		return false;
 	}
+
+	//Create timer object
+	_timer = new Timer();
+	if (!_timer)
+		return false;
+	result = _timer->Init();
+	if (!result)
+		return false;
 
 	return true;
 }
@@ -75,10 +85,10 @@ bool System::Init()
 void System::Shutdown()
 {
 	//Release the timer object
-	if (_timer)
+	if (_frameTimer)
 	{
-		delete _timer;
-		_timer = NULL;
+		delete _frameTimer;
+		_frameTimer = NULL;
 	}
 
 	//Release the CPU object
@@ -164,30 +174,82 @@ void System::Run()
 
 bool System::Frame()
 {
-	bool result;
-	int mouseX, mouseY;
+	switch (_state)
+	{
+	case Splash:
+		{
+			bool result;
 
-	//Update the system stats
-	_timer->Frame();
-	_fps->Frame();
-	_cpu->Frame();
+			if (_mouse->RButtonDown())
+				_state = MainMenu;
 
-	//Update from inputs
-	mouseX = _mouse->GetX();
-	mouseY = _mouse->GetY();
+			//Graphics Splash Frame
+			result = _graphics->FrameSplash();
+			if (!result)
+				return false;
 
-	//Do game processing here
+			//Render
+			result = _graphics->RenderSplash();
+			if (!result)
+				return false;
 
-	//Do frame processing for the graphics object
-	result = _graphics->Frame(mouseX, mouseY, _fps->GetFps(), _cpu->GetCPUPercent(), _timer->GetTime());
-	if (!result)
-		return false;
+			return true;
+		}
+	case MainMenu:
+		{
+			bool result;
+			int mouseX, mouseY;
 
-	result = _graphics->Render();
-	if (!result)
-		return false;
+			//Update the system stats
+			_frameTimer->Frame();
+			_fps->Frame();
+			_cpu->Frame();
 
-	return true;
+			//Update from inputs
+			mouseX = _mouse->GetX();
+			mouseY = _mouse->GetY();
+
+			//Do game processing here
+
+			//Do frame processing for the graphics object
+			result = _graphics->Frame(mouseX, mouseY, _fps->GetFps(), _cpu->GetCPUPercent(), _frameTimer->GetTime());
+			if (!result)
+				return false;
+
+			result = _graphics->Render();
+			if (!result)
+				return false;
+
+			return true;
+		}
+	default:
+		{
+			bool result;
+			int mouseX, mouseY;
+
+			//Update the system stats
+			_frameTimer->Frame();
+			_fps->Frame();
+			_cpu->Frame();
+
+			//Update from inputs
+			mouseX = -2;
+			mouseY = -2;
+
+			//Do game processing here
+
+			//Do frame processing for the graphics object
+			result = _graphics->Frame(mouseX, mouseY, _fps->GetFps(), _cpu->GetCPUPercent(), _frameTimer->GetTime());
+			if (!result)
+				return false;
+
+			result = _graphics->Render();
+			if (!result)
+				return false;
+
+			return true;
+		}
+	}
 }
 
 LRESULT CALLBACK System::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam, LPARAM lParam)
@@ -294,7 +356,6 @@ LRESULT CALLBACK System::MessageHandler(HWND hWnd, UINT umsg, WPARAM wParam, LPA
 		}
 	}
 }
-
 
 void System::InitWindows(int& screenWidth, int& screenHeight)
 {
