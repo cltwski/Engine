@@ -76,7 +76,7 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 		return false;
 	}
 
-	for (int i=0; i < 2; ++i)
+	for (int i=0; i < 4; ++i)
 	{
 		_objects2d.push_back(new Object2D());
 		result = _objects2d[i]->Init(_d3d->GetDevice(), "Grass", "Texture", 64, 64);
@@ -84,7 +84,7 @@ bool Graphics::Init(int screenWidth, int screenHeight, HWND hWnd)
 			return false;
 	}
 
-	for (int i=0; i < 2; ++i)
+	for (int i=0; i < 4; ++i)
 	{
 		_objects2d.push_back(new Object2D());
 		result = _objects2d[i+2]->Init(_d3d->GetDevice(), "Water", "Texture", 64, 64);
@@ -115,6 +115,7 @@ bool Graphics::LoadAssets(HWND hwnd)
 	result = TextureManager::GetInstance().AddTexture(L"Data/Textures/SplashScreen.dds", "SplashScreen");
 	if (!result)
 		return false;
+	result = TextureManager::GetInstance().AddTexture(L"Data/Textures/Button.dds", "Button");
 
 	//Load shaders
 	result = ShaderManager::GetInstance().AddShader(new TextureShader(), hwnd, "Texture");
